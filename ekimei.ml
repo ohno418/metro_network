@@ -11,8 +11,6 @@ type ekimei_t = {
 let hyouji ekimei = match ekimei with
   {kanji = a; kana = b; romaji = c; shozoku = d} -> d ^ ", " ^ a ^ " (" ^ b ^ ")"
 
-
-(* test *)
 let test1 = hyouji {kanji = "茗荷谷";
                     kana = "みょうがだに";
                     romaji = "myougadani";
