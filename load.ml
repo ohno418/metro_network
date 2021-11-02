@@ -1,0 +1,5 @@
+#use "ekimei.ml"
+#use "ekikan.ml"
+#use "global_data_list.ml"
+#use "funcs.ml"
+#use "eki.ml"
