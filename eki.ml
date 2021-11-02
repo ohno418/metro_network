@@ -23,3 +23,26 @@ let test1 = make_eki_list [
   {namae="本郷三丁目"; saitan_kyori=infinity; temae_list=[]};
   {namae="御茶ノ水"; saitan_kyori=infinity; temae_list=[]};
 ]
+
+(* eki_t のリストを初期化する.
+   始点の駅名 (漢字) を受け取り, 以下の処理をする.
+   - saitan_kyori を 0 に
+   - temae_list を始点の駅名のみのリストに *)
+(* shokika : eki_t list -> string -> eki_t list *)
+let rec shokika lst shiten = match lst with
+    [] -> []
+  | {namae=n; saitan_kyori=s; temae_list=t} :: rest ->
+        if n = shiten then {namae=n; saitan_kyori=0.0; temae_list=[n]} :: rest
+                       else {namae=n; saitan_kyori=s; temae_list=t} :: shokika rest shiten
+
+let test2 = shokika [
+  {namae="茗荷谷"; saitan_kyori=infinity; temae_list=[]};
+  {namae="後楽園"; saitan_kyori=infinity; temae_list=[]};
+  {namae="本郷三丁目"; saitan_kyori=infinity; temae_list=[]};
+  {namae="御茶ノ水"; saitan_kyori=infinity; temae_list=[]};
+] "後楽園" = [
+  {namae="茗荷谷"; saitan_kyori=infinity; temae_list=[]};
+  {namae="後楽園"; saitan_kyori=0.0; temae_list=["後楽園"]};
+  {namae="本郷三丁目"; saitan_kyori=infinity; temae_list=[]};
+  {namae="御茶ノ水"; saitan_kyori=infinity; temae_list=[]};
+]
