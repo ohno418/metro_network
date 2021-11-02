@@ -1,8 +1,8 @@
 (* 最短経路を計算する際に使うデータ集合を扱うための型. *)
 type eki_t = {
-  namae : string;       (* 駅名 (漢字) *)
-  saitan_kyori : float; (* 最短距離 *)
-  temae_list : string list;  (* 経路の駅名 (漢字) のリスト *)
+  namae : string;           (* 駅名 (漢字) *)
+  saitan_kyori : float;     (* 最短距離 *)
+  temae_list : string list; (* 経路の駅名 (漢字) のリスト *)
 }
 
 (* global_ekimei_list から eki_t のリストを生成する. *)
