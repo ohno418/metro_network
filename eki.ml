@@ -24,6 +24,7 @@ let test1 = make_eki_list [
   {namae="御茶ノ水"; saitan_kyori=infinity; temae_list=[]};
 ]
 
+
 (* eki_t のリストを初期化する.
    始点の駅名 (漢字) を受け取り, 以下の処理をする.
    - saitan_kyori を 0 に
@@ -45,4 +46,52 @@ let test2 = shokika [
   {namae="後楽園"; saitan_kyori=0.0; temae_list=["後楽園"]};
   {namae="本郷三丁目"; saitan_kyori=infinity; temae_list=[]};
   {namae="御茶ノ水"; saitan_kyori=infinity; temae_list=[]};
+]
+
+
+(* insert : ekimei_t list -> ekimei_t -> ekimei_t list *)
+let rec insert lst e = match lst with
+    [] -> [e]
+  | first :: rest ->
+        if first.kana = e.kana then insert rest e
+        else if first.kana < e.kana then first :: insert rest e
+        else e :: lst
+
+let test3 = insert [
+  {kanji="池袋"; kana="いけぶくろ"; romaji="ikebukuro"; shozoku="丸ノ内線"};
+  {kanji="新大塚"; kana="しんおおつか"; romaji="shinotsuka"; shozoku="丸ノ内線"};
+  {kanji="茗荷谷"; kana="みょうがだに"; romaji="myogadani"; shozoku="丸ノ内線"};
+] {kanji="要町"; kana="かなめちょう"; romaji="kanametyou"; shozoku="有楽町線"} = [
+  {kanji="池袋"; kana="いけぶくろ"; romaji="ikebukuro"; shozoku="丸ノ内線"};
+  {kanji="要町"; kana="かなめちょう"; romaji="kanametyou"; shozoku="有楽町線"};
+  {kanji="新大塚"; kana="しんおおつか"; romaji="shinotsuka"; shozoku="丸ノ内線"};
+  {kanji="茗荷谷"; kana="みょうがだに"; romaji="myogadani"; shozoku="丸ノ内線"};
+]
+let test4 = insert [
+  {kanji="池袋"; kana="いけぶくろ"; romaji="ikebukuro"; shozoku="丸ノ内線"};
+  {kanji="新大塚"; kana="しんおおつか"; romaji="shinotsuka"; shozoku="丸ノ内線"};
+  {kanji="茗荷谷"; kana="みょうがだに"; romaji="myogadani"; shozoku="丸ノ内線"};
+] {kanji="池袋"; kana="いけぶくろ"; romaji="ikebukuro"; shozoku="有楽町線"} = [
+  {kanji="池袋"; kana="いけぶくろ"; romaji="ikebukuro"; shozoku="有楽町線"};
+  {kanji="新大塚"; kana="しんおおつか"; romaji="shinotsuka"; shozoku="丸ノ内線"};
+  {kanji="茗荷谷"; kana="みょうがだに"; romaji="myogadani"; shozoku="丸ノ内線"};
+]
+
+(* ekimei_t のリストを受け取り, kana でソートして, 重複する駅名のものを削除する. *)
+(* seiretsu : ekimei_t list -> ekimei_t *)
+let rec seiretsu ekimei_lst = match ekimei_lst with
+    [] -> []
+  | first :: rest -> insert (seiretsu rest) first
+
+let test5 = seiretsu [
+  {kanji="池袋"; kana="いけぶくろ"; romaji="ikebukuro"; shozoku="丸ノ内線"};
+  {kanji="新大塚"; kana="しんおおつか"; romaji="shinotsuka"; shozoku="丸ノ内線"};
+  {kanji="茗荷谷"; kana="みょうがだに"; romaji="myogadani"; shozoku="丸ノ内線"};
+  {kanji="池袋"; kana="いけぶくろ"; romaji="ikebukuro"; shozoku="有楽町線"};
+  {kanji="要町"; kana="かなめちょう"; romaji="kanametyou"; shozoku="有楽町線"};
+] = [
+  {kanji="池袋"; kana="いけぶくろ"; romaji="ikebukuro"; shozoku="丸ノ内線"};
+  {kanji="要町"; kana="かなめちょう"; romaji="kanametyou"; shozoku="有楽町線"};
+  {kanji="新大塚"; kana="しんおおつか"; romaji="shinotsuka"; shozoku="丸ノ内線"};
+  {kanji="茗荷谷"; kana="みょうがだに"; romaji="myogadani"; shozoku="丸ノ内線"};
 ]
