@@ -138,3 +138,55 @@ let test11 = koushin1
   {namae="茗荷谷"; saitan_kyori=1.0; temae_list=["茗荷谷"]}
   {namae="後楽園"; saitan_kyori=1.5; temae_list=["後楽園"; "xx"]}
   = {namae="後楽園"; saitan_kyori=1.5; temae_list=["後楽園"; "xx"]}
+
+(* 直前に確定した駅 p : eki_t と未確定の駅リスト v : eki_t list を受け取り,
+   必要な更新処理を実行した後の未確定の駅リストを返す. *)
+(* koushin : eki_t -> eki_t list -> eki_t list *)
+let koushin p lst = List.map (koushin1 p) lst
+
+let test12 = koushin
+  {namae="茗荷谷"; saitan_kyori=1.0; temae_list=["茗荷谷"]}
+  []
+= []
+let test13 = koushin
+  {namae="茗荷谷"; saitan_kyori=1.0; temae_list=["茗荷谷"]}
+  [
+    {namae="新大塚"; saitan_kyori=infinity; temae_list=[]};
+    {namae="後楽園"; saitan_kyori=infinity; temae_list=[]};
+    {namae="本郷三丁目"; saitan_kyori=infinity; temae_list=[]};
+    {namae="御茶ノ水"; saitan_kyori=infinity; temae_list=[]};
+  ]
+= [
+    {namae="新大塚"; saitan_kyori=2.2; temae_list=["新大塚"; "茗荷谷"]};
+    {namae="後楽園"; saitan_kyori=2.8; temae_list=["後楽園"; "茗荷谷"]};
+    {namae="本郷三丁目"; saitan_kyori=infinity; temae_list=[]};
+    {namae="御茶ノ水"; saitan_kyori=infinity; temae_list=[]};
+  ]
+let test14 = koushin
+  {namae="茗荷谷"; saitan_kyori=1.0; temae_list=["茗荷谷"]}
+  [
+    {namae="新大塚"; saitan_kyori=2.0; temae_list=["新大塚"; "xxx"]};
+    {namae="後楽園"; saitan_kyori=infinity; temae_list=[]};
+    {namae="本郷三丁目"; saitan_kyori=infinity; temae_list=[]};
+    {namae="御茶ノ水"; saitan_kyori=infinity; temae_list=[]};
+  ]
+= [
+    {namae="新大塚"; saitan_kyori=2.0; temae_list=["新大塚"; "xxx"]};
+    {namae="後楽園"; saitan_kyori=2.8; temae_list=["後楽園"; "茗荷谷"]};
+    {namae="本郷三丁目"; saitan_kyori=infinity; temae_list=[]};
+    {namae="御茶ノ水"; saitan_kyori=infinity; temae_list=[]};
+  ]
+let test15 = koushin
+  {namae="茗荷谷"; saitan_kyori=1.0; temae_list=["茗荷谷"]}
+  [
+    {namae="新大塚"; saitan_kyori=2.0; temae_list=["新大塚"; "xxx"]};
+    {namae="後楽園"; saitan_kyori=3.0; temae_list=["後楽園"; "yyy"]};
+    {namae="本郷三丁目"; saitan_kyori=infinity; temae_list=[]};
+    {namae="御茶ノ水"; saitan_kyori=infinity; temae_list=[]};
+  ]
+= [
+    {namae="新大塚"; saitan_kyori=2.0; temae_list=["新大塚"; "xxx"]};
+    {namae="後楽園"; saitan_kyori=2.8; temae_list=["後楽園"; "茗荷谷"]};
+    {namae="本郷三丁目"; saitan_kyori=infinity; temae_list=[]};
+    {namae="御茶ノ水"; saitan_kyori=infinity; temae_list=[]};
+  ]
