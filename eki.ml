@@ -5,46 +5,28 @@ type eki_t = {
   temae_list : string list; (* 経路の駅名 (漢字) のリスト *)
 }
 
-(* global_ekimei_list から eki_t のリストを生成する. *)
-(* make_eki_list : ekimei_t list -> eki_t list *)
-let make_eki_list ekimei_lst =
-  List.map
-    (fun ekimei -> match ekimei with
-      {kanji=k; kana=_; romaji=_; shozoku=_} -> {namae=k; saitan_kyori=infinity; temae_list=[]})
-    ekimei_lst
+(* 駅名のリスト lst : ekimei_t list と, 始点の駅名 shiten : string を受け取り,
+   初期化した eki_t のリストを返す.
 
-let test1 = make_eki_list [
+   初期化とは, 始点の eki_t について以下の処理を行うことを指す.
+   - saitan_kyori を 0 に.
+   - temae_list を始点の駅名のみのリストに. *)
+(* make_eki_list : ekimei_t list -> string -> eki_t list *)
+let make_initial_eki_list lst shiten =
+  List.map
+    (fun eki -> match eki with
+      {kanji=k; kana=_; romaji=_; shozoku=_} ->
+        if k = shiten then {namae=k; saitan_kyori=0.0; temae_list=[k]}
+                      else {namae=k; saitan_kyori=infinity; temae_list=[]})
+    lst
+
+let test1 = make_initial_eki_list [
   {kanji="茗荷谷"; kana="みょうがだに"; romaji="myougadani"; shozoku="丸ノ内線"};
   {kanji="後楽園"; kana="こうらくえん"; romaji="korakuen"; shozoku="丸ノ内線"};
   {kanji="本郷三丁目"; kana="ほんごうさんちょうめ"; romaji="hongousanchoume"; shozoku="丸ノ内線"};
   {kanji="御茶ノ水"; kana="おちゃのみず"; romaji="ochanomizu"; shozoku="丸ノ内線"};
-] = [
-  {namae="茗荷谷"; saitan_kyori=infinity; temae_list=[]};
-  {namae="後楽園"; saitan_kyori=infinity; temae_list=[]};
-  {namae="本郷三丁目"; saitan_kyori=infinity; temae_list=[]};
-  {namae="御茶ノ水"; saitan_kyori=infinity; temae_list=[]};
-]
-
-
-(* eki_t のリストを初期化する.
-   始点の駅名 (漢字) を受け取り, 以下の処理をする.
-   - saitan_kyori を 0 に
-   - temae_list を始点の駅名のみのリストに *)
-(* shokika : eki_t list -> string -> eki_t list *)
-let shokika lst shiten =
-  List.map
-    (fun eki -> match eki with
-      {namae=n; saitan_kyori=s; temae_list=t} ->
-        if n = shiten then {namae=n; saitan_kyori=0.0; temae_list=[n]}
-                      else eki)
-    lst
-
-let test2 = shokika [
-  {namae="茗荷谷"; saitan_kyori=infinity; temae_list=[]};
-  {namae="後楽園"; saitan_kyori=infinity; temae_list=[]};
-  {namae="本郷三丁目"; saitan_kyori=infinity; temae_list=[]};
-  {namae="御茶ノ水"; saitan_kyori=infinity; temae_list=[]};
-] "後楽園" = [
+] "後楽園"
+= [
   {namae="茗荷谷"; saitan_kyori=infinity; temae_list=[]};
   {namae="後楽園"; saitan_kyori=0.0; temae_list=["後楽園"]};
   {namae="本郷三丁目"; saitan_kyori=infinity; temae_list=[]};
