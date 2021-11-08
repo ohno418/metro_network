@@ -7,10 +7,11 @@ type eki_t = {
 
 (* global_ekimei_list から eki_t のリストを生成する. *)
 (* make_eki_list : ekimei_t list -> eki_t list *)
-let rec make_eki_list ekimei_lst = match ekimei_lst with
-    [] -> []
-  | {kanji=k; kana=_; romaji=_; shozoku=_} :: rest ->
-        {namae=k; saitan_kyori=infinity; temae_list=[]} :: make_eki_list rest
+let make_eki_list ekimei_lst =
+  List.map
+    (fun ekimei -> match ekimei with
+      {kanji=k; kana=_; romaji=_; shozoku=_} -> {namae=k; saitan_kyori=infinity; temae_list=[]})
+    ekimei_lst
 
 let test1 = make_eki_list [
   {kanji="茗荷谷"; kana="みょうがだに"; romaji="myougadani"; shozoku="丸ノ内線"};
