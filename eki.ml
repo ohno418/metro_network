@@ -81,16 +81,17 @@ let test5 = seiretsu [
   {kanji="茗荷谷"; kana="みょうがだに"; romaji="myogadani"; shozoku="丸ノ内線"};
 ]
 
+
 (* 直前に確定した駅 p : eki_t と未確定の駅リスト v : eki_t list を受け取り,
    必要な更新処理を実行した後の未確定の駅リストを返す. *)
 (* koushin : eki_t -> eki_t list -> eki_t list *)
 let koushin p lst =
-    (* 直前に確定した駅 p : eki_t と, 未確定の駅 q : eki_t を受け取り,
-       p と q が直接つながっているかを調べ,
+  List.map
+    (* 未確定の駅 q : eki_t を受け取り,
+       確定済みの駅 p : eki_t と q が直接つながっているかを調べ,
        つながっていたら q の最短距離と手前リストを必要に応じて更新する.
        つながっていなかったら q をそのまま返す. *)
-    (* koushin1 : eki_t -> eki_t -> eki_t *)
-    let koushin1 p q = match (p, q) with
+    (fun q -> match (p, q) with
       (
         {namae=n0; saitan_kyori=s0; temae_list=t0},
         {namae=n1; saitan_kyori=s1; temae_list=t1}
@@ -100,9 +101,9 @@ let koushin p lst =
             then q (* 直接つながっていない *)
             else
               if kyori < s1
-                then {namae=n1; saitan_kyori=kyori; temae_list=n1::t0} (* 更新 *)
-                else q                                                 (* 更新せず *)
-    in List.map (koushin1 p) lst
+                then {namae=n1; saitan_kyori=kyori; temae_list=n1::t0}
+                else q)
+    lst
 
 let test12 = koushin
   {namae="茗荷谷"; saitan_kyori=1.0; temae_list=["茗荷谷"]}
