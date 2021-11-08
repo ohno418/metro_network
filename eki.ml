@@ -42,7 +42,7 @@ let rec insert lst e = match lst with
         else if first.kana < e.kana then first :: insert rest e
         else e :: lst
 
-let test3 = insert [
+let test2 = insert [
   {kanji="池袋"; kana="いけぶくろ"; romaji="ikebukuro"; shozoku="丸ノ内線"};
   {kanji="新大塚"; kana="しんおおつか"; romaji="shinotsuka"; shozoku="丸ノ内線"};
   {kanji="茗荷谷"; kana="みょうがだに"; romaji="myogadani"; shozoku="丸ノ内線"};
@@ -52,7 +52,7 @@ let test3 = insert [
   {kanji="新大塚"; kana="しんおおつか"; romaji="shinotsuka"; shozoku="丸ノ内線"};
   {kanji="茗荷谷"; kana="みょうがだに"; romaji="myogadani"; shozoku="丸ノ内線"};
 ]
-let test4 = insert [
+let test3 = insert [
   {kanji="池袋"; kana="いけぶくろ"; romaji="ikebukuro"; shozoku="丸ノ内線"};
   {kanji="新大塚"; kana="しんおおつか"; romaji="shinotsuka"; shozoku="丸ノ内線"};
   {kanji="茗荷谷"; kana="みょうがだに"; romaji="myogadani"; shozoku="丸ノ内線"};
@@ -68,7 +68,7 @@ let rec seiretsu ekimei_lst = match ekimei_lst with
     [] -> []
   | first :: rest -> insert (seiretsu rest) first
 
-let test5 = seiretsu [
+let test4 = seiretsu [
   {kanji="池袋"; kana="いけぶくろ"; romaji="ikebukuro"; shozoku="丸ノ内線"};
   {kanji="新大塚"; kana="しんおおつか"; romaji="shinotsuka"; shozoku="丸ノ内線"};
   {kanji="茗荷谷"; kana="みょうがだに"; romaji="myogadani"; shozoku="丸ノ内線"};
@@ -105,11 +105,11 @@ let koushin p lst =
                 else q)
     lst
 
-let test12 = koushin
+let test5 = koushin
   {namae="茗荷谷"; saitan_kyori=1.0; temae_list=["茗荷谷"]}
   []
 = []
-let test13 = koushin
+let test6 = koushin
   {namae="茗荷谷"; saitan_kyori=1.0; temae_list=["茗荷谷"]}
   [
     {namae="新大塚"; saitan_kyori=infinity; temae_list=[]};
@@ -123,7 +123,7 @@ let test13 = koushin
     {namae="本郷三丁目"; saitan_kyori=infinity; temae_list=[]};
     {namae="御茶ノ水"; saitan_kyori=infinity; temae_list=[]};
   ]
-let test14 = koushin
+let test7 = koushin
   {namae="茗荷谷"; saitan_kyori=1.0; temae_list=["茗荷谷"]}
   [
     {namae="新大塚"; saitan_kyori=2.0; temae_list=["新大塚"; "xxx"]};
@@ -137,7 +137,7 @@ let test14 = koushin
     {namae="本郷三丁目"; saitan_kyori=infinity; temae_list=[]};
     {namae="御茶ノ水"; saitan_kyori=infinity; temae_list=[]};
   ]
-let test15 = koushin
+let test8 = koushin
   {namae="茗荷谷"; saitan_kyori=1.0; temae_list=["茗荷谷"]}
   [
     {namae="新大塚"; saitan_kyori=2.0; temae_list=["新大塚"; "xxx"]};
