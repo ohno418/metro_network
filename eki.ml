@@ -31,11 +31,13 @@ let test1 = make_eki_list [
    - saitan_kyori を 0 に
    - temae_list を始点の駅名のみのリストに *)
 (* shokika : eki_t list -> string -> eki_t list *)
-let rec shokika lst shiten = match lst with
-    [] -> []
-  | {namae=n; saitan_kyori=s; temae_list=t} :: rest ->
-        if n = shiten then {namae=n; saitan_kyori=0.0; temae_list=[n]} :: rest
-                       else {namae=n; saitan_kyori=s; temae_list=t} :: shokika rest shiten
+let shokika lst shiten =
+  List.map
+    (fun eki -> match eki with
+      {namae=n; saitan_kyori=s; temae_list=t} ->
+        if n = shiten then {namae=n; saitan_kyori=0.0; temae_list=[n]}
+                      else eki)
+    lst
 
 let test2 = shokika [
   {namae="茗荷谷"; saitan_kyori=infinity; temae_list=[]};
