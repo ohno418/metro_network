@@ -104,33 +104,6 @@ let koushin p lst =
                 else q                                                 (* 更新せず *)
     in List.map (koushin1 p) lst
 
-(*
-let test6 = koushin1
-  {namae="茗荷谷"; saitan_kyori=0.0; temae_list=["茗荷谷"]}
-  {namae="後楽園"; saitan_kyori=infinity; temae_list=[]}
-  = {namae="後楽園"; saitan_kyori=1.8; temae_list=["後楽園"; "茗荷谷"]}
-let test7 = koushin1
-  {namae="茗荷谷"; saitan_kyori=0.0; temae_list=["茗荷谷"]}
-  {namae="後楽園"; saitan_kyori=3.0; temae_list=["後楽園"; "xx"]}
-  = {namae="後楽園"; saitan_kyori=1.8; temae_list=["後楽園"; "茗荷谷"]}
-let test8 = koushin1
-  {namae="茗荷谷"; saitan_kyori=0.0; temae_list=["茗荷谷"]}
-  {namae="後楽園"; saitan_kyori=1.0; temae_list=["後楽園"; "xx"]}
-  = {namae="後楽園"; saitan_kyori=1.0; temae_list=["後楽園"; "xx"]}
-let test9 = koushin1
-  {namae="茗荷谷"; saitan_kyori=0.0; temae_list=["茗荷谷"]}
-  {namae="本郷三丁目"; saitan_kyori=infinity; temae_list=["後楽園"; "xx"]}
-  = {namae="本郷三丁目"; saitan_kyori=infinity; temae_list=["後楽園"; "xx"]}
-let test10 = koushin1
-  {namae="茗荷谷"; saitan_kyori=1.0; temae_list=["茗荷谷"]}
-  {namae="後楽園"; saitan_kyori=3.0; temae_list=["後楽園"; "xx"]}
-  = {namae="後楽園"; saitan_kyori=2.8; temae_list=["後楽園"; "茗荷谷"]}
-let test11 = koushin1
-  {namae="茗荷谷"; saitan_kyori=1.0; temae_list=["茗荷谷"]}
-  {namae="後楽園"; saitan_kyori=1.5; temae_list=["後楽園"; "xx"]}
-  = {namae="後楽園"; saitan_kyori=1.5; temae_list=["後楽園"; "xx"]}
-*)
-
 let test12 = koushin
   {namae="茗荷谷"; saitan_kyori=1.0; temae_list=["茗荷谷"]}
   []
