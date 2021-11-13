@@ -151,3 +151,30 @@ let test8 = koushin
     {namae="本郷三丁目"; saitan_kyori=infinity; temae_list=[]};
     {namae="御茶ノ水"; saitan_kyori=infinity; temae_list=[]};
   ]
+
+(* eki_t のリストを受け取り,
+   最短距離最小の駅 と それ以外の駅のリスト を返す. *)
+(* saitan_wo_bunri : eki_t list -> eki_t * eki_t list *)
+let rec saitan_wo_bunri lst = match lst with
+    [] -> (None, [])
+  | {namae=_; saitan_kyori=s; temae_list=_} as first :: rest ->
+      let (a, ls) = saitan_wo_bunri rest in
+      if Option.is_none a
+      then (Some first, ls)
+      else if s < (Option.get a).saitan_kyori
+           then (Some first, rest)
+           else (a, first::ls)
+
+let test9 = saitan_wo_bunri [
+  {namae="新大塚"; saitan_kyori=1.0; temae_list=[]};
+  {namae="後楽園"; saitan_kyori=0.4; temae_list=[]};
+  {namae="本郷三丁目"; saitan_kyori=1.5; temae_list=[]};
+  {namae="御茶ノ水"; saitan_kyori=infinity; temae_list=[]};
+] = (
+  Option.some {namae="後楽園"; saitan_kyori=0.4; temae_list=[]},
+  [
+    {namae="新大塚"; saitan_kyori=1.0; temae_list=[]};
+    {namae="本郷三丁目"; saitan_kyori=1.5; temae_list=[]};
+    {namae="御茶ノ水"; saitan_kyori=infinity; temae_list=[]};
+  ]
+)
