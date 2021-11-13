@@ -181,3 +181,37 @@ let test9 = saitan_wo_bunri [
     {namae="御茶ノ水"; saitan_kyori=infinity; temae_list=[]};
   ]
 )
+
+
+(* 未確定の駅のリスト eki_list と, 駅間データ ekikan_list を受け取り,
+   ダイクストラのアルゴリズムにより,
+   各駅について最短距離と最短経路が正しく入ったリストを返す. *)
+(* dijkstra_main : eki_t list -> ekikan_t list -> eki_t list *)
+let rec dijkstra_main eki_list ekikan_list = match eki_list with
+    [] -> []
+  | {namae=n; saitan_kyori=s; temae_list=t} :: _ ->
+      let (saitan_op, rest) = saitan_wo_bunri eki_list in
+      let saitan = Option.get saitan_op in
+      let undetermined_eki_list = koushin saitan rest ekikan_list in
+      saitan :: dijkstra_main undetermined_eki_list ekikan_list
+
+
+(* 始点の駅名 (ローマ字) と, 終点の駅名 (ローマ字) を受け取り,
+   終点の eki_t を返す. *)
+(* dijkstra : string -> string -> eki_t *)
+let dijkstra shiten_romaji syuten_romaji =
+  let shiten_kanji = romaji_to_kanji shiten_romaji global_ekimei_list in
+  let syuten_kanji = romaji_to_kanji syuten_romaji global_ekimei_list in
+  let init_list = make_initial_eki_list (seiretsu global_ekimei_list) shiten_kanji in
+  let result_list = dijkstra_main init_list global_ekikan_list in
+  let rec find_syuten lst syuten = match lst with
+      [] -> failwith "syuten not found"
+    | {namae=n; saitan_kyori=_; temae_list=_} as first :: rest ->
+        if n = syuten then first else find_syuten rest syuten in
+  find_syuten result_list syuten_kanji
+
+
+let test10 = dijkstra "myogadani" "hongosanchome"
+  = {namae="本郷三丁目"; saitan_kyori=2.6; temae_list=["本郷三丁目"; "後楽園"; "茗荷谷"]}
+let test11 = (dijkstra "myogadani" "shinjuku-gyoemmae").namae = "新宿御苑前"
+let test12 = (dijkstra "myogadani" "shinjuku-gyoemmae").temae_list = ["新宿御苑前"; "四谷三丁目"; "四ツ谷"; "市ヶ谷"; "飯田橋"; "後楽園"; "茗荷谷"]
