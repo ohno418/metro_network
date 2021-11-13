@@ -153,17 +153,18 @@ let test8 = koushin
   ]
 
 (* eki_t のリストを受け取り,
-   最短距離最小の駅 と それ以外の駅のリスト を返す. *)
-(* saitan_wo_bunri : eki_t list -> eki_t * eki_t list *)
-let rec saitan_wo_bunri lst = match lst with
-    [] -> (None, [])
-  | {namae=_; saitan_kyori=s; temae_list=_} as first :: rest ->
-      let (a, ls) = saitan_wo_bunri rest in
-      if Option.is_none a
-      then (Some first, ls)
-      else if s < (Option.get a).saitan_kyori
-           then (Some first, rest)
-           else (a, first::ls)
+   最短距離最小の駅(Option) と それ以外の駅のリスト を返す. *)
+(* saitan_wo_bunri : eki_t list -> eki_t option * eki_t list *)
+let saitan_wo_bunri lst = List.fold_right
+  (fun item (saitan_op, rest) ->
+    match (item, saitan_op) with
+        ({namae=_; saitan_kyori=s0; temae_list=_}, None) -> (Some item, rest)
+      | ({namae=_; saitan_kyori=s0; temae_list=_},
+         Some {namae=_; saitan_kyori=s1; temae_list=_}) ->
+           if s0 < s1 then (Some item, (Option.get saitan_op) :: rest)
+                      else (saitan_op, item :: rest))
+  lst
+  (None, [])
 
 let test9 = saitan_wo_bunri [
   {namae="新大塚"; saitan_kyori=1.0; temae_list=[]};
@@ -171,7 +172,7 @@ let test9 = saitan_wo_bunri [
   {namae="本郷三丁目"; saitan_kyori=1.5; temae_list=[]};
   {namae="御茶ノ水"; saitan_kyori=infinity; temae_list=[]};
 ] = (
-  Option.some {namae="後楽園"; saitan_kyori=0.4; temae_list=[]},
+  Some {namae="後楽園"; saitan_kyori=0.4; temae_list=[]},
   [
     {namae="新大塚"; saitan_kyori=1.0; temae_list=[]};
     {namae="本郷三丁目"; saitan_kyori=1.5; temae_list=[]};
