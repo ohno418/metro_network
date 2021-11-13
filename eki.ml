@@ -82,10 +82,12 @@ let test4 = seiretsu [
 ]
 
 
-(* 直前に確定した駅 p : eki_t と未確定の駅リスト v : eki_t list を受け取り,
-   必要な更新処理を実行した後の未確定の駅リストを返す. *)
-(* koushin : eki_t -> eki_t list -> eki_t list *)
-let koushin p lst =
+(* - 直前に確定した駅 p : eki_t
+   - 未確定の駅リスト v : eki_t list
+   - 駅間データ : ekikan_t list
+   を受け取り, 必要な更新処理を実行した後の未確定の駅リストを返す. *)
+(* koushin : eki_t -> eki_t list -> ekikan_t list -> eki_t list *)
+let koushin p eki_list ekikan_list =
   List.map
     (* 未確定の駅 q : eki_t を受け取り,
        確定済みの駅 p : eki_t と q が直接つながっているかを調べ,
@@ -96,18 +98,18 @@ let koushin p lst =
         {namae=n0; saitan_kyori=s0; temae_list=t0},
         {namae=n1; saitan_kyori=s1; temae_list=t1}
       ) ->
-        let kyori = (get_ekikan_kyori n0 n1 global_ekikan_list) +. s0 in
+        let kyori = (get_ekikan_kyori n0 n1 ekikan_list) +. s0 in
           if kyori = infinity
             then q (* 直接つながっていない *)
             else
               if kyori < s1
                 then {namae=n1; saitan_kyori=kyori; temae_list=n1::t0}
                 else q)
-    lst
+    eki_list
 
 let test5 = koushin
   {namae="茗荷谷"; saitan_kyori=1.0; temae_list=["茗荷谷"]}
-  []
+  [] global_ekikan_list
 = []
 let test6 = koushin
   {namae="茗荷谷"; saitan_kyori=1.0; temae_list=["茗荷谷"]}
@@ -116,7 +118,7 @@ let test6 = koushin
     {namae="後楽園"; saitan_kyori=infinity; temae_list=[]};
     {namae="本郷三丁目"; saitan_kyori=infinity; temae_list=[]};
     {namae="御茶ノ水"; saitan_kyori=infinity; temae_list=[]};
-  ]
+  ] global_ekikan_list
 = [
     {namae="新大塚"; saitan_kyori=2.2; temae_list=["新大塚"; "茗荷谷"]};
     {namae="後楽園"; saitan_kyori=2.8; temae_list=["後楽園"; "茗荷谷"]};
@@ -130,7 +132,7 @@ let test7 = koushin
     {namae="後楽園"; saitan_kyori=infinity; temae_list=[]};
     {namae="本郷三丁目"; saitan_kyori=infinity; temae_list=[]};
     {namae="御茶ノ水"; saitan_kyori=infinity; temae_list=[]};
-  ]
+  ] global_ekikan_list
 = [
     {namae="新大塚"; saitan_kyori=2.0; temae_list=["新大塚"; "xxx"]};
     {namae="後楽園"; saitan_kyori=2.8; temae_list=["後楽園"; "茗荷谷"]};
@@ -144,7 +146,7 @@ let test8 = koushin
     {namae="後楽園"; saitan_kyori=3.0; temae_list=["後楽園"; "yyy"]};
     {namae="本郷三丁目"; saitan_kyori=infinity; temae_list=[]};
     {namae="御茶ノ水"; saitan_kyori=infinity; temae_list=[]};
-  ]
+  ] global_ekikan_list
 = [
     {namae="新大塚"; saitan_kyori=2.0; temae_list=["新大塚"; "xxx"]};
     {namae="後楽園"; saitan_kyori=2.8; temae_list=["後楽園"; "茗荷谷"]};
