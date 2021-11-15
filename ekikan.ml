@@ -50,6 +50,13 @@ let ekikan3 = {kiten="千駄木"; shuten="西日暮里"; keiyu="千代田線"; k
 let ekikan_tree1 = insert_ekikan Empty ekikan1
 let ekikan_tree2 = insert_ekikan ekikan_tree1 ekikan2
 let ekikan_tree3 = insert_ekikan ekikan_tree2 ekikan3
-let test1 = ekikan_tree1 = Node (Node (Empty, "根津", [("湯島", 1.2)], Empty), "湯島", [("根津", 1.2)], Empty)
-let test2 = ekikan_tree2 = Node (Node (Node (Empty, "千駄木", [("根津", 1.0)], Empty), "根津", [("千駄木", 1.0); ("湯島", 1.2)], Empty), "湯島", [("根津", 1.2)], Empty)
-let test3 = ekikan_tree3 = Node (Node (Node (Empty, "千駄木", [("西日暮里", 0.9); ("根津", 1.0)], Empty), "根津", [("千駄木", 1.0); ("湯島", 1.2)], Empty), "湯島", [("根津", 1.2)], Node (Empty, "西日暮里", [("千駄木", 0.9)], Empty))
+let test3 = ekikan_tree1 = Node (Node (Empty, "根津", [("湯島", 1.2)], Empty), "湯島", [("根津", 1.2)], Empty)
+let test4 = ekikan_tree2 = Node (Node (Node (Empty, "千駄木", [("根津", 1.0)], Empty), "根津", [("千駄木", 1.0); ("湯島", 1.2)], Empty), "湯島", [("根津", 1.2)], Empty)
+let test5 = ekikan_tree3 = Node (Node (Node (Empty, "千駄木", [("西日暮里", 0.9); ("根津", 1.0)], Empty), "根津", [("千駄木", 1.0); ("湯島", 1.2)], Empty), "湯島", [("根津", 1.2)], Node (Empty, "西日暮里", [("千駄木", 0.9)], Empty))
+
+
+(* Buld insert. *)
+(* inserts_ekikan : ekikan_tree_t -> ekikan_t list -> ekikan_tree_t *)
+let inserts_ekikan tree lst = List.fold_left insert_ekikan tree lst
+
+let test6 = inserts_ekikan Empty [ekikan1; ekikan2; ekikan3] = Node (Node (Node (Empty, "千駄木", [("西日暮里", 0.9); ("根津", 1.0)], Empty), "根津", [("千駄木", 1.0); ("湯島", 1.2)], Empty), "湯島", [("根津", 1.2)], Node (Empty, "西日暮里", [("千駄木", 0.9)], Empty))
