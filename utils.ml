@@ -49,6 +49,7 @@ let test8 = get_ekikan_kyori "茗荷谷" "新大塚" global_ekikan_list = 1.2
 let test9 = get_ekikan_kyori "本郷三丁目" "御茶ノ水" global_ekikan_list = 0.8
 let test10 = get_ekikan_kyori "茗荷谷" "本郷三丁目" global_ekikan_list = infinity
 
+
 (* ローマ字の駅名2つを受け取り, "茗荷谷駅から新大塚駅までは1.2kmです" という文字列を返す.
    直接つながっていない駅同士は "茗荷谷駅と本郷三丁目駅はつながっていません" という文字列を返す.
    存在しない駅名については "asdfという駅名は存在しません" という文字列を返す. *)
