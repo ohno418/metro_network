@@ -33,6 +33,7 @@ let test4 = romaji_to_kanji "myogadani" global_ekimei_list = "茗荷谷"
 let test5 = romaji_to_kanji "yoyogiuehara" global_ekimei_list = "代々木上原"
 let test6 = romaji_to_kanji "shin-ochanomizu" global_ekimei_list = "新御茶ノ水"
 
+
 (* 漢字の駅名2つと駅間リストを受け取り駅間距離を返す.
    直接つながっていない駅同士の場合は infinity を返す. *)
 (* get_ekikan_kyori : string -> string -> ekikan_t list -> float *)
