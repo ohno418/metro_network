@@ -1,9 +1,15 @@
+#use "ekimei.ml"
+#use "ekikan.ml"
+#use "global_data_list.ml"
+#use "utils.ml"
+
 (* 最短経路を計算する際に使うデータ集合を扱うための型. *)
 type eki_t = {
   namae : string;           (* 駅名 (漢字) *)
   saitan_kyori : float;     (* 最短距離 *)
   temae_list : string list; (* 経路の駅名 (漢字) のリスト *)
 }
+
 
 (* 駅名のリスト lst : ekimei_t list と, 始点の駅名 shiten : string を受け取り,
    初期化した eki_t のリストを返す.
@@ -153,6 +159,7 @@ let test8 = koushin
     {namae="本郷三丁目"; saitan_kyori=infinity; temae_list=[]};
     {namae="御茶ノ水"; saitan_kyori=infinity; temae_list=[]};
   ]
+
 
 (* eki_t のリストを受け取り,
    最短距離最小の駅(Option) と それ以外の駅のリスト を返す. *)
