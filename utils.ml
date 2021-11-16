@@ -60,7 +60,7 @@ let kyori_wo_hyoji r_eki1 r_eki2 =
     let k_eki2 = romaji_to_kanji r_eki2 global_ekimei_list in
         if k_eki1 = "" then r_eki1 ^ "という駅名は存在しません" else
         if k_eki2 = "" then r_eki2 ^ "という駅名は存在しません" else
-            let kyori = get_ekikan_kyori k_eki1 k_eki2 global_ekikan_list in
+            let kyori = get_ekikan_kyori k_eki1 k_eki2 (inserts_ekikan Empty global_ekikan_list) in
                 if kyori = infinity then k_eki1 ^ "駅と" ^ k_eki2 ^ "駅はつながっていません"
                                     else k_eki1 ^ "駅から" ^ k_eki2 ^ "駅までは" ^
                                          string_of_float kyori ^ "kmです"

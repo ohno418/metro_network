@@ -92,8 +92,8 @@ let test4 = seiretsu [
    - 未確定の駅リスト v : eki_t list
    - 駅間データ : ekikan_t list
    を受け取り, 必要な更新処理を実行した後の未確定の駅リストを返す. *)
-(* koushin : eki_t -> eki_t list -> ekikan_t list -> eki_t list *)
-let koushin p eki_list ekikan_list =
+(* koushin : eki_t -> eki_t list -> ekikan_tree -> eki_t list *)
+let koushin p eki_list ekikan_tree =
   List.map
     (* 未確定の駅 q : eki_t を受け取り,
        確定済みの駅 p : eki_t と q が直接つながっているかを調べ,
@@ -104,7 +104,7 @@ let koushin p eki_list ekikan_list =
         {namae=n0; saitan_kyori=s0; temae_list=t0},
         {namae=n1; saitan_kyori=s1; temae_list=t1}
       ) ->
-        let kyori = (get_ekikan_kyori n0 n1 ekikan_list) +. s0 in
+        let kyori = (get_ekikan_kyori n0 n1 ekikan_tree) +. s0 in
           if kyori = infinity
             then q (* 直接つながっていない *)
             else
@@ -113,9 +113,10 @@ let koushin p eki_list ekikan_list =
                 else q)
     eki_list
 
+let ekikan_tree = inserts_ekikan Empty global_ekikan_list
 let test5 = koushin
   {namae="茗荷谷"; saitan_kyori=1.0; temae_list=["茗荷谷"]}
-  [] global_ekikan_list
+  [] ekikan_tree
 = []
 let test6 = koushin
   {namae="茗荷谷"; saitan_kyori=1.0; temae_list=["茗荷谷"]}
@@ -124,7 +125,7 @@ let test6 = koushin
     {namae="後楽園"; saitan_kyori=infinity; temae_list=[]};
     {namae="本郷三丁目"; saitan_kyori=infinity; temae_list=[]};
     {namae="御茶ノ水"; saitan_kyori=infinity; temae_list=[]};
-  ] global_ekikan_list
+  ] ekikan_tree
 = [
     {namae="新大塚"; saitan_kyori=2.2; temae_list=["新大塚"; "茗荷谷"]};
     {namae="後楽園"; saitan_kyori=2.8; temae_list=["後楽園"; "茗荷谷"]};
@@ -138,7 +139,7 @@ let test7 = koushin
     {namae="後楽園"; saitan_kyori=infinity; temae_list=[]};
     {namae="本郷三丁目"; saitan_kyori=infinity; temae_list=[]};
     {namae="御茶ノ水"; saitan_kyori=infinity; temae_list=[]};
-  ] global_ekikan_list
+  ] ekikan_tree
 = [
     {namae="新大塚"; saitan_kyori=2.0; temae_list=["新大塚"; "xxx"]};
     {namae="後楽園"; saitan_kyori=2.8; temae_list=["後楽園"; "茗荷谷"]};
@@ -152,7 +153,7 @@ let test8 = koushin
     {namae="後楽園"; saitan_kyori=3.0; temae_list=["後楽園"; "yyy"]};
     {namae="本郷三丁目"; saitan_kyori=infinity; temae_list=[]};
     {namae="御茶ノ水"; saitan_kyori=infinity; temae_list=[]};
-  ] global_ekikan_list
+  ] ekikan_tree
 = [
     {namae="新大塚"; saitan_kyori=2.0; temae_list=["新大塚"; "xxx"]};
     {namae="後楽園"; saitan_kyori=2.8; temae_list=["後楽園"; "茗荷谷"]};
@@ -193,14 +194,14 @@ let test9 = saitan_wo_bunri [
 (* 未確定の駅のリスト eki_list と, 駅間データ ekikan_list を受け取り,
    ダイクストラのアルゴリズムにより,
    各駅について最短距離と最短経路が正しく入ったリストを返す. *)
-(* dijkstra_main : eki_t list -> ekikan_t list -> eki_t list *)
-let rec dijkstra_main eki_list ekikan_list = match eki_list with
+(* dijkstra_main : eki_t list -> ekikan_tree -> eki_t list *)
+let rec dijkstra_main eki_list ekikan_tree = match eki_list with
     [] -> []
   | {namae=n; saitan_kyori=s; temae_list=t} :: _ ->
       let (saitan_op, rest) = saitan_wo_bunri eki_list in
       let saitan = Option.get saitan_op in
-      let undetermined_eki_list = koushin saitan rest ekikan_list in
-      saitan :: dijkstra_main undetermined_eki_list ekikan_list
+      let undetermined_eki_list = koushin saitan rest ekikan_tree in
+      saitan :: dijkstra_main undetermined_eki_list ekikan_tree
 
 
 (* 始点の駅名 (ローマ字) と, 終点の駅名 (ローマ字) を受け取り,
@@ -210,7 +211,8 @@ let dijkstra shiten_romaji syuten_romaji =
   let shiten_kanji = romaji_to_kanji shiten_romaji global_ekimei_list in
   let syuten_kanji = romaji_to_kanji syuten_romaji global_ekimei_list in
   let init_list = make_initial_eki_list (seiretsu global_ekimei_list) shiten_kanji in
-  let result_list = dijkstra_main init_list global_ekikan_list in
+  let ekikan_tree = inserts_ekikan Empty global_ekikan_list in
+  let result_list = dijkstra_main init_list ekikan_tree in
   let rec find_syuten lst syuten = match lst with
       [] -> failwith "syuten not found"
     | {namae=n; saitan_kyori=_; temae_list=_} as first :: rest ->
