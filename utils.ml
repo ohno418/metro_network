@@ -34,20 +34,21 @@ let test5 = romaji_to_kanji "yoyogiuehara" global_ekimei_list = "代々木上原
 let test6 = romaji_to_kanji "shin-ochanomizu" global_ekimei_list = "新御茶ノ水"
 
 
-(* 漢字の駅名2つと駅間リストを受け取り駅間距離を返す.
+(* 駅名 (漢字) 2つと駅間treeを受け取り駅間距離を返す.
    直接つながっていない駅同士の場合は infinity を返す. *)
-(* get_ekikan_kyori : string -> string -> ekikan_t list -> float *)
-let rec get_ekikan_kyori eki1 eki2 lst = match lst with
-    [] -> infinity
-  | {kiten=k; shuten=s; keiyu=_; kyori=kyori; jikan=_} :: rest ->
-        if (k = eki1 && s = eki2) || (k = eki2 && s = eki1)
-            then kyori
-            else get_ekikan_kyori eki1 eki2 rest
+(* get_ekikan_kyori : string -> string -> ekikan_tree_t -> float *)
+let rec get_ekikan_kyori eki1 eki2 tree = match tree with
+    Empty -> infinity
+  | Node (t1, ekimei, lst, t2) ->
+      if eki1 < ekimei then get_ekikan_kyori eki1 eki2 t1
+      else if eki1 > ekimei then get_ekikan_kyori eki1 eki2 t2
+      else assoc eki2 lst
 
-let test7 = get_ekikan_kyori "新大塚" "茗荷谷" global_ekikan_list = 1.2
-let test8 = get_ekikan_kyori "茗荷谷" "新大塚" global_ekikan_list = 1.2
-let test9 = get_ekikan_kyori "本郷三丁目" "御茶ノ水" global_ekikan_list = 0.8
-let test10 = get_ekikan_kyori "茗荷谷" "本郷三丁目" global_ekikan_list = infinity
+let ekikan_tree = inserts_ekikan Empty global_ekikan_list
+let test7 = get_ekikan_kyori "新大塚" "茗荷谷" ekikan_tree = 1.2
+let test8 = get_ekikan_kyori "茗荷谷" "新大塚" ekikan_tree = 1.2
+let test9 = get_ekikan_kyori "本郷三丁目" "御茶ノ水" ekikan_tree = 0.8
+let test10 = get_ekikan_kyori "茗荷谷" "本郷三丁目" ekikan_tree = infinity
 
 
 (* ローマ字の駅名2つを受け取り, "茗荷谷駅から新大塚駅までは1.2kmです" という文字列を返す.
