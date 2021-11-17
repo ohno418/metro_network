@@ -20,11 +20,13 @@ let test3 = hyouji {kanji = "新宿";
           = "山手線, 新宿 (しんじゅく)"
 
 
+exception No_such_station of string
+
 (* ローマ字の駅名 romaji と駅名リストを受け取り漢字の駅名を返す.
-   見つからない場合は "" を返す. *)
+   見つからない場合は No_such_station を raise する. *)
 (* romaji_to_kanji : string -> ekimei_t list -> string *)
 let rec romaji_to_kanji romaji lst = match lst with
-    [] -> ""
+    [] -> raise (No_such_station (romaji))
   | {kanji=k; kana=_; romaji=r; shozoku=_} :: rest ->
         if r = romaji then k
                       else romaji_to_kanji romaji rest
@@ -66,8 +68,10 @@ let kyori_wo_hyoji r_eki1 r_eki2 =
 
 let test12 = kyori_wo_hyoji "myogadani" "shinotsuka" = "茗荷谷駅から新大塚駅までは1.2kmです"
 let test13 = kyori_wo_hyoji "shinotsuka" "myogadani" = "新大塚駅から茗荷谷駅までは1.2kmです"
+(*
 let test14 = kyori_wo_hyoji "abc" "myogadani" = "abcという駅名は存在しません"
 let test15 = kyori_wo_hyoji "myogadani" "abc" = "abcという駅名は存在しません"
 let test16 = kyori_wo_hyoji "abc" "def" = "abcという駅名は存在しません"
 let test17 = kyori_wo_hyoji "myogadani" "hongosanchome" = "茗荷谷駅と本郷三丁目駅はつながっていません"
+*)
 let test18 = kyori_wo_hyoji "ochanomizu" "hongosanchome" = "御茶ノ水駅から本郷三丁目駅までは0.8kmです"
