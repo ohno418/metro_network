@@ -35,7 +35,7 @@ let test6 = romaji_to_kanji "shin-ochanomizu" global_ekimei_list = "新御茶ノ
 
 
 (* 駅名 (漢字) 2つと駅間treeを受け取り駅間距離を返す.
-   直接つながっていない駅同士の場合は infinity を返す. *)
+   直接つながっていない駅同士の場合は Not_found を raise する. *)
 (* get_ekikan_kyori : string -> string -> ekikan_tree_t -> float *)
 let rec get_ekikan_kyori eki1 eki2 tree = match tree with
     Empty -> infinity
@@ -48,7 +48,6 @@ let ekikan_tree = inserts_ekikan Empty global_ekikan_list
 let test7 = get_ekikan_kyori "新大塚" "茗荷谷" ekikan_tree = 1.2
 let test8 = get_ekikan_kyori "茗荷谷" "新大塚" ekikan_tree = 1.2
 let test9 = get_ekikan_kyori "本郷三丁目" "御茶ノ水" ekikan_tree = 0.8
-let test10 = get_ekikan_kyori "茗荷谷" "本郷三丁目" ekikan_tree = infinity
 
 
 (* ローマ字の駅名2つを受け取り, "茗荷谷駅から新大塚駅までは1.2kmです" という文字列を返す.
@@ -65,10 +64,10 @@ let kyori_wo_hyoji r_eki1 r_eki2 =
                                     else k_eki1 ^ "駅から" ^ k_eki2 ^ "駅までは" ^
                                          string_of_float kyori ^ "kmです"
 
-let test11 = kyori_wo_hyoji "myogadani" "shinotsuka" = "茗荷谷駅から新大塚駅までは1.2kmです"
-let test12 = kyori_wo_hyoji "shinotsuka" "myogadani" = "新大塚駅から茗荷谷駅までは1.2kmです"
-let test13 = kyori_wo_hyoji "abc" "myogadani" = "abcという駅名は存在しません"
-let test14 = kyori_wo_hyoji "myogadani" "abc" = "abcという駅名は存在しません"
-let test15 = kyori_wo_hyoji "abc" "def" = "abcという駅名は存在しません"
-let test16 = kyori_wo_hyoji "myogadani" "hongosanchome" = "茗荷谷駅と本郷三丁目駅はつながっていません"
-let test14 = kyori_wo_hyoji "ochanomizu" "hongosanchome" = "御茶ノ水駅から本郷三丁目駅までは0.8kmです"
+let test12 = kyori_wo_hyoji "myogadani" "shinotsuka" = "茗荷谷駅から新大塚駅までは1.2kmです"
+let test13 = kyori_wo_hyoji "shinotsuka" "myogadani" = "新大塚駅から茗荷谷駅までは1.2kmです"
+let test14 = kyori_wo_hyoji "abc" "myogadani" = "abcという駅名は存在しません"
+let test15 = kyori_wo_hyoji "myogadani" "abc" = "abcという駅名は存在しません"
+let test16 = kyori_wo_hyoji "abc" "def" = "abcという駅名は存在しません"
+let test17 = kyori_wo_hyoji "myogadani" "hongosanchome" = "茗荷谷駅と本郷三丁目駅はつながっていません"
+let test18 = kyori_wo_hyoji "ochanomizu" "hongosanchome" = "御茶ノ水駅から本郷三丁目駅までは0.8kmです"

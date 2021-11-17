@@ -104,13 +104,12 @@ let koushin p eki_list ekikan_tree =
         {namae=n0; saitan_kyori=s0; temae_list=t0},
         {namae=n1; saitan_kyori=s1; temae_list=t1}
       ) ->
-        let kyori = (get_ekikan_kyori n0 n1 ekikan_tree) +. s0 in
-          if kyori = infinity
-            then q (* 直接つながっていない *)
-            else
-              if kyori < s1
-                then {namae=n1; saitan_kyori=kyori; temae_list=n1::t0}
-                else q)
+        try
+          let kyori = (get_ekikan_kyori n0 n1 ekikan_tree) +. s0 in
+          if kyori < s1
+            then {namae=n1; saitan_kyori=kyori; temae_list=n1::t0}
+            else q
+        with Not_found -> q)
     eki_list
 
 let ekikan_tree = inserts_ekikan Empty global_ekikan_list
