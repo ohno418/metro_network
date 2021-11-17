@@ -38,7 +38,7 @@ let test6 = romaji_to_kanji "shin-ochanomizu" global_ekimei_list = "新御茶ノ
    直接つながっていない駅同士の場合は Not_found を raise する. *)
 (* get_ekikan_kyori : string -> string -> ekikan_tree_t -> float *)
 let rec get_ekikan_kyori eki1 eki2 tree = match tree with
-    Empty -> infinity
+    Empty -> raise Not_found
   | Node (t1, ekimei, lst, t2) ->
       if eki1 < ekimei then get_ekikan_kyori eki1 eki2 t1
       else if eki1 > ekimei then get_ekikan_kyori eki1 eki2 t2
