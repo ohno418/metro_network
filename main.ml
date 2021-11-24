@@ -1,4 +1,4 @@
-#use "tree.ml"
+#use "red_black_tree.ml"
 #use "ekimei.ml"
 #use "ekikan.ml"
 #use "global_data_list.ml"
@@ -113,7 +113,7 @@ let koushin p eki_list ekikan_tree =
         with Not_found -> q)
     eki_list
 
-let ekikan_tree = bulk_insert_ekikan Tree.empty global_ekikan_list
+let ekikan_tree = bulk_insert_ekikan RedBlackTree.empty global_ekikan_list
 let test5 = koushin
   {namae="茗荷谷"; saitan_kyori=1.0; temae_list=["茗荷谷"]}
   [] ekikan_tree
@@ -211,7 +211,7 @@ let dijkstra shiten_romaji syuten_romaji =
   let shiten_kanji = romaji_to_kanji shiten_romaji global_ekimei_list in
   let syuten_kanji = romaji_to_kanji syuten_romaji global_ekimei_list in
   let init_list = make_initial_eki_list (seiretsu global_ekimei_list) shiten_kanji in
-  let ekikan_tree = bulk_insert_ekikan Tree.empty global_ekikan_list in
+  let ekikan_tree = bulk_insert_ekikan RedBlackTree.empty global_ekikan_list in
   let result_list = dijkstra_main init_list ekikan_tree in
   let rec find_syuten lst syuten = match lst with
       [] -> failwith "syuten not found"

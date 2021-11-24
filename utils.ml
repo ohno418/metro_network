@@ -38,10 +38,10 @@ let test6 = romaji_to_kanji "shin-ochanomizu" global_ekimei_list = "新御茶ノ
 
 (* 駅名 (漢字) 2つと駅間treeを受け取り駅間距離を返す.
    直接つながっていない駅同士の場合は Not_found を raise する. *)
-(* get_ekikan_kyori : string -> string -> (string, (string * float) list) Tree.t -> float *)
-let get_ekikan_kyori eki1 eki2 tree = assoc eki2 (Tree.search tree eki1)
+(* get_ekikan_kyori : string -> string -> (string, (string * float) list) RedBlackTree.t -> float *)
+let get_ekikan_kyori eki1 eki2 tree = assoc eki2 (RedBlackTree.search tree eki1)
 
-let ekikan_tree = bulk_insert_ekikan Tree.empty global_ekikan_list
+let ekikan_tree = bulk_insert_ekikan RedBlackTree.empty global_ekikan_list
 let test7 = get_ekikan_kyori "新大塚" "茗荷谷" ekikan_tree = 1.2
 let test8 = get_ekikan_kyori "茗荷谷" "新大塚" ekikan_tree = 1.2
 let test9 = get_ekikan_kyori "本郷三丁目" "御茶ノ水" ekikan_tree = 0.8
@@ -56,7 +56,7 @@ let kyori_wo_hyoji r_eki1 r_eki2 =
     let k_eki2 = romaji_to_kanji r_eki2 global_ekimei_list in
         if k_eki1 = "" then r_eki1 ^ "という駅名は存在しません" else
         if k_eki2 = "" then r_eki2 ^ "という駅名は存在しません" else
-            let kyori = get_ekikan_kyori k_eki1 k_eki2 (bulk_insert_ekikan Tree.empty global_ekikan_list) in
+            let kyori = get_ekikan_kyori k_eki1 k_eki2 (bulk_insert_ekikan RedBlackTree.empty global_ekikan_list) in
                 if kyori = infinity then k_eki1 ^ "駅と" ^ k_eki2 ^ "駅はつながっていません"
                                     else k_eki1 ^ "駅から" ^ k_eki2 ^ "駅までは" ^
                                          string_of_float kyori ^ "kmです"

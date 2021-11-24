@@ -10,7 +10,7 @@ type ekikan_t = {
 
 (* 駅間データを収めたtree *)
 (* Node : 駅名 (漢字) * (直接つながっている駅 * 距離) list *)
-type ekikan_tree_t = (string, (string * float) list) Tree.t
+type ekikan_tree_t = (string, (string * float) list) RedBlackTree.t
 
 
 (* - 駅名 (漢字) : string
@@ -33,9 +33,9 @@ let bulk_insert_ekikan tree lst =
     (* insert1 : ekikan_tree_t -> string -> string -> float -> ekikan_tree_t *)
     let insert1 tree kiten shuten kyori =
       let lst =
-        try Tree.search tree kiten
+        try RedBlackTree.search tree kiten
         with Not_found -> [] in
-      Tree.insert tree kiten ((shuten, kyori) :: lst) in
+      RedBlackTree.insert tree kiten ((shuten, kyori) :: lst) in
     match ekikan with
       {kiten=k; shuten=s; keiyu=_; kyori=d; jikan=_} ->
         insert1 (insert1 tree k s d) s k d in
