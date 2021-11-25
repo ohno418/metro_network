@@ -2,6 +2,7 @@ open Ekimei
 open Ekikan
 open RedBlackTree
 open GlobalDataList
+open Utils
 
 (* 最短経路を計算する際に使うデータ集合を扱うための型. *)
 type eki_t = {
@@ -111,7 +112,7 @@ let koushin p eki_list ekikan_tree =
         {namae=n1; saitan_kyori=s1; temae_list=_}
       ) ->
         try
-          let kyori = (Utils.get_ekikan_kyori n0 n1 ekikan_tree) +. s0 in
+          let kyori = (get_ekikan_kyori n0 n1 ekikan_tree) +. s0 in
           if kyori < s1
             then {namae=n1; saitan_kyori=kyori; temae_list=n1::t0}
             else q
