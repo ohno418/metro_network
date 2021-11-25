@@ -207,17 +207,17 @@ let rec dijkstra_main eki_list ekikan_tree = match eki_list with
 (* 始点の駅名 (ローマ字) と, 終点の駅名 (ローマ字) を受け取り,
    終点の eki_t を返す. *)
 (* dijkstra : string -> string -> eki_t *)
-let dijkstra shiten_romaji syuten_romaji =
+let dijkstra shiten_romaji shuten_romaji =
   let shiten_kanji = romaji_to_kanji shiten_romaji global_ekimei_list in
-  let syuten_kanji = romaji_to_kanji syuten_romaji global_ekimei_list in
+  let shuten_kanji = romaji_to_kanji shuten_romaji global_ekimei_list in
   let init_list = make_initial_eki_list (seiretsu global_ekimei_list) shiten_kanji in
   let ekikan_tree = bulk_insert_ekikan RedBlackTree.empty global_ekikan_list in
   let result_list = dijkstra_main init_list ekikan_tree in
-  let rec find_syuten lst syuten = match lst with
-      [] -> failwith "syuten not found"
+  let rec find_shuten lst shuten = match lst with
+      [] -> failwith "shuten not found"
     | {namae=n; saitan_kyori=_; temae_list=_} as first :: rest ->
-        if n = syuten then first else find_syuten rest syuten in
-  find_syuten result_list syuten_kanji
+        if n = shuten then first else find_shuten rest shuten in
+  find_shuten result_list shuten_kanji
 
 
 let test10 = dijkstra "myogadani" "hongosanchome"
