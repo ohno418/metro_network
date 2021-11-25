@@ -1,31 +1,16 @@
-(* 駅間type *)
 type ekikan_t = {
-  kiten : string;  (* 起点の駅名 *)
-  shuten : string; (* 終点の駅名 *)
-  keiyu : string;  (* 経由駅の駅名 *)
-  kyori : float;   (* 距離 *)
-  jikan : int;     (* 所要時間 *)
+  kiten : string;
+  shuten : string;
+  keiyu : string;
+  kyori : float;
+  jikan : int;
 }
 
-
-(* 駅間データを収めたtree *)
-(* Node : 駅名 (漢字) * (直接つながっている駅 * 距離) list *)
-type ekikan_tree_t = (string, (string * float) list) RedBlackTree.t
-
-
-(* - 駅名 (漢字) : string
-   - 駅名と距離の組のリスト : (string * float) list
-   を受け取り, 距離を返す.
-   駅名が見つからない場合は Not_found を raise する. *)
-(* assoc : 'a -> ('a * 'b) list -> 'b *)
 let rec assoc ekimei lst = match lst with
     [] -> raise Not_found
   | (name, kyori) :: rest -> if ekimei = name then kyori
                                               else assoc ekimei rest
 
-
-(* Bulk insert. *)
-(* bulk_insert_ekikan : ekikan_tree_t -> ekikan_t list -> ekikan_tree_t *)
 let bulk_insert_ekikan tree lst =
   (* insert_ekikan : ekikan_tree_t -> ekikan_t -> ekikan_tree_t *)
   let insert_ekikan tree ekikan =
