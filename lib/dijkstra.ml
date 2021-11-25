@@ -11,7 +11,6 @@ type eki_t = {
   temae_list : string list; (* 経路の駅名 (漢字) のリスト *)
 }
 
-
 (* 駅名のリスト lst : ekimei_t list と, 始点の駅名 shiten : string を受け取り,
    初期化した eki_t のリストを返す.
 
@@ -41,7 +40,6 @@ let test1 = make_initial_eki_list [
   {namae="御茶ノ水"; saitan_kyori=infinity; temae_list=[]};
 ]
 *)
-
 
 (* insert : ekimei_t list -> ekimei_t -> ekimei_t list *)
 let rec insert lst e = match lst with
@@ -93,7 +91,6 @@ let test4 = seiretsu [
   {kanji="茗荷谷"; kana="みょうがだに"; romaji="myogadani"; shozoku="丸ノ内線"};
 ]
 *)
-
 
 (* - 直前に確定した駅 p : eki_t
    - 未確定の駅リスト v : eki_t list
@@ -169,7 +166,6 @@ let test8 = koushin
   ]
 *)
 
-
 (* eki_t のリストを受け取り,
    最短距離最小の駅(Option) と それ以外の駅のリスト を返す. *)
 (* saitan_wo_bunri : eki_t list -> eki_t option * eki_t list *)
@@ -200,7 +196,6 @@ let test9 = saitan_wo_bunri [
 )
 *)
 
-
 (* 未確定の駅のリスト eki_list と, 駅間データ ekikan_list を受け取り,
    ダイクストラのアルゴリズムにより,
    各駅について最短距離と最短経路が正しく入ったリストを返す. *)
@@ -213,8 +208,6 @@ let rec dijkstra_main eki_list ekikan_tree = match eki_list with
       let undetermined_eki_list = koushin saitan rest ekikan_tree in
       saitan :: dijkstra_main undetermined_eki_list ekikan_tree
 
-
-(* dijkstra : string -> string -> eki_t *)
 let dijkstra shiten_kanji shuten_kanji =
   let init_list = make_initial_eki_list (seiretsu global_ekimei_list) shiten_kanji in
   let ekikan_tree = bulk_insert_ekikan empty global_ekikan_list in
@@ -225,7 +218,6 @@ let dijkstra shiten_kanji shuten_kanji =
         if n = shuten then first else find_shuten rest shuten in
   find_shuten result_list shuten_kanji
 
-
 (*
 let test10 = dijkstra "myogadani" "hongosanchome"
   = {namae="本郷三丁目"; saitan_kyori=2.6; temae_list=["本郷三丁目"; "後楽園"; "茗荷谷"]}
@@ -233,9 +225,6 @@ let test11 = (dijkstra "myogadani" "shinjuku-gyoemmae").namae = "新宿御苑前
 let test12 = (dijkstra "myogadani" "shinjuku-gyoemmae").temae_list = ["新宿御苑前"; "四谷三丁目"; "四ツ谷"; "市ヶ谷"; "飯田橋"; "後楽園"; "茗荷谷"]
 *)
 
-
-(* eki_t を受け取り, 経由を含めた最短距離を説明する. *)
-(* print_eki : eki_t -> unit *)
 let print_eki eki = match eki with
   {namae=n; saitan_kyori=s; temae_list=lst} ->
     (print_string n;

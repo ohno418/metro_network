@@ -1,3 +1,4 @@
+(* 最短経路を計算する際に使うデータ集合を扱うための型. *)
 type eki_t
 
 val dijkstra : string -> string -> eki_t
