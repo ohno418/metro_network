@@ -1,6 +1,5 @@
 open Ekimei
 open Ekikan
-open Utils
 open RedBlackTree
 open GlobalDataList
 
@@ -112,7 +111,7 @@ let koushin p eki_list ekikan_tree =
         {namae=n1; saitan_kyori=s1; temae_list=_}
       ) ->
         try
-          let kyori = (get_ekikan_kyori n0 n1 ekikan_tree) +. s0 in
+          let kyori = (Utils.get_ekikan_kyori n0 n1 ekikan_tree) +. s0 in
           if kyori < s1
             then {namae=n1; saitan_kyori=kyori; temae_list=n1::t0}
             else q
@@ -216,8 +215,8 @@ let rec dijkstra_main eki_list ekikan_tree = match eki_list with
 
 (* dijkstra : string -> string -> eki_t *)
 let dijkstra shiten_romaji shuten_romaji =
-  let shiten_kanji = romaji_to_kanji shiten_romaji global_ekimei_list in
-  let shuten_kanji = romaji_to_kanji shuten_romaji global_ekimei_list in
+  let shiten_kanji = Utils.romaji_to_kanji shiten_romaji global_ekimei_list in
+  let shuten_kanji = Utils.romaji_to_kanji shuten_romaji global_ekimei_list in
   let init_list = make_initial_eki_list (seiretsu global_ekimei_list) shiten_kanji in
   let ekikan_tree = bulk_insert_ekikan empty global_ekikan_list in
   let result_list = dijkstra_main init_list ekikan_tree in
