@@ -244,8 +244,8 @@ let print_eki eki = match eki with
 (* 始点の駅名 (ローマ字) と, 終点の駅名 (ローマ字) を受け取り,
    始点から終点までの最短経路の行き方をprintする. *)
 (* main : string -> string -> unit *)
-let main kiten_romaji shuten_romaji =
-  let eki = dijkstra kiten_romaji shuten_romaji in
+let main shiten_romaji shuten_romaji =
+  let eki = dijkstra shiten_romaji shuten_romaji in
   print_eki eki
 
 
