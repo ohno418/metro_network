@@ -1,10 +1,6 @@
-val romaji_to_kanji : string -> Ekimei.ekimei_t list -> string
-  (* ローマ字の駅名 romaji と駅名リストを受け取り, 漢字の駅名を返す.
-     見つからない場合は No_such_station を raise する. *)
-
-val kanji_to_romaji : string -> Ekimei.ekimei_t list -> string
-  (* 漢字の駅名 romaji と駅名リストを受け取り, ローマ字の駅名を返す.
-     見つからない場合は No_such_station を raise する. *)
+val validate_eki_kanji : string -> unit
+  (* 漢字の駅名を受け取り, global_ekimei_list に存在する駅名の場合は unit を返す.
+     存在しない駅名の場合は No_such_station を raise する. *)
 
 val get_ekikan_kyori : string -> string -> (string, (string * float) list) RedBlackTree.t -> float
   (* 駅名 (漢字) 2つと駅間treeを受け取り駅間距離を返す.

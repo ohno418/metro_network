@@ -1,5 +1,6 @@
 open Ekimei
 open Ekikan
+open GlobalDataList
 
 (* ekimei_tを受け取り、「路線名, 駅名 (かな)」の文字列返す *)
 (* hyouji : ekimei_t -> string *)
@@ -30,23 +31,37 @@ exception No_such_station of string
 (* ローマ字の駅名 romaji と駅名リストを受け取り漢字の駅名を返す.
    見つからない場合は No_such_station を raise する. *)
 (* romaji_to_kanji : string -> ekimei_t list -> string *)
+(*
 let rec romaji_to_kanji romaji lst = match lst with
     [] -> raise (No_such_station (romaji))
   | {kanji=k; kana=_; romaji=r; shozoku=_} :: rest ->
         if r = romaji then k
                       else romaji_to_kanji romaji rest
 
-(*
 let test4 = romaji_to_kanji "myogadani" global_ekimei_list = "茗荷谷"
 let test5 = romaji_to_kanji "yoyogiuehara" global_ekimei_list = "代々木上原"
 let test6 = romaji_to_kanji "shin-ochanomizu" global_ekimei_list = "新御茶ノ水"
 *)
 
+(* 漢字の駅名 romaji と駅名リストを受け取り, ローマ字の駅名を返す.
+   見つからない場合は No_such_station を raise する. *)
+(*
 let rec kanji_to_romaji kanji lst = match lst with
     [] -> raise (No_such_station (kanji))
   | {kanji=k; kana=_; romaji=r; shozoku=_} :: rest ->
         if k = kanji then r
                      else kanji_to_romaji kanji rest
+*)
+
+(* 漢字の駅名と ekimei_t のリストを受け取り, 存在する駅名の場合は unit を返す.
+   存在しない駅名の場合は No_such_station を raise する. *)
+let validate_eki_kanji eki =
+  let rec validate_from_global_list kanji lst = match lst with
+      [] -> raise (No_such_station (kanji))
+    | {kanji=k; kana=_; romaji=_; shozoku=_} :: rest ->
+          if k = kanji then ()
+                       else validate_from_global_list kanji rest in
+  validate_from_global_list eki global_ekimei_list
 
 
 (* 駅名 (漢字) 2つと駅間treeを受け取り駅間距離を返す.
