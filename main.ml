@@ -224,3 +224,30 @@ let test10 = dijkstra "myogadani" "hongosanchome"
   = {namae="本郷三丁目"; saitan_kyori=2.6; temae_list=["本郷三丁目"; "後楽園"; "茗荷谷"]}
 let test11 = (dijkstra "myogadani" "shinjuku-gyoemmae").namae = "新宿御苑前"
 let test12 = (dijkstra "myogadani" "shinjuku-gyoemmae").temae_list = ["新宿御苑前"; "四谷三丁目"; "四ツ谷"; "市ヶ谷"; "飯田橋"; "後楽園"; "茗荷谷"]
+
+
+(* eki_t を受け取り, 経由を含めた最短距離を説明する. *)
+(* print_eki : eki_t -> unit *)
+let print_eki eki = match eki with
+  {namae=n; saitan_kyori=s; temae_list=lst} ->
+    (print_string n;
+     print_string "へは, ";
+     print_string (List.fold_right
+       (fun e str -> if str = "" then e else str ^ "->" ^ e)
+       lst "");
+     print_string "という順番で経由し, ";
+     print_float s;
+     print_string "kmです.";
+     print_newline ())
+
+
+(* 始点の駅名 (ローマ字) と, 終点の駅名 (ローマ字) を受け取り,
+   始点から終点までの最短経路の行き方をprintする. *)
+(* main : string -> string -> unit *)
+let main kiten_romaji shuten_romaji =
+  let eki = dijkstra kiten_romaji shuten_romaji in
+  print_eki eki
+
+
+let test13 = main "myogadani" "hongosanchome"
+let test14 = main "myogadani" "shinjuku-gyoemmae"
