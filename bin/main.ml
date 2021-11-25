@@ -1,8 +1,8 @@
-#use "red_black_tree.ml"
-#use "ekimei.ml"
-#use "ekikan.ml"
-#use "global_data_list.ml"
-#use "utils.ml"
+open Metro_network.Ekimei
+open Metro_network.Ekikan
+open Metro_network.Utils
+open Metro_network.RedBlackTree
+open Metro_network.GlobalDataList
 
 (* 最短経路を計算する際に使うデータ集合を扱うための型. *)
 type eki_t = {
@@ -103,7 +103,7 @@ let koushin p eki_list ekikan_tree =
     (fun q -> match (p, q) with
       (
         {namae=n0; saitan_kyori=s0; temae_list=t0},
-        {namae=n1; saitan_kyori=s1; temae_list=t1}
+        {namae=n1; saitan_kyori=s1; temae_list=_}
       ) ->
         try
           let kyori = (get_ekikan_kyori n0 n1 ekikan_tree) +. s0 in
@@ -113,7 +113,7 @@ let koushin p eki_list ekikan_tree =
         with Not_found -> q)
     eki_list
 
-let ekikan_tree = bulk_insert_ekikan RedBlackTree.empty global_ekikan_list
+let ekikan_tree = bulk_insert_ekikan empty global_ekikan_list
 let test5 = koushin
   {namae="茗荷谷"; saitan_kyori=1.0; temae_list=["茗荷谷"]}
   [] ekikan_tree
@@ -168,7 +168,7 @@ let test8 = koushin
 let saitan_wo_bunri lst = List.fold_right
   (fun item (saitan_op, rest) ->
     match (item, saitan_op) with
-        ({namae=_; saitan_kyori=s0; temae_list=_}, None) -> (Some item, rest)
+        ({namae=_; saitan_kyori=_; temae_list=_}, None) -> (Some item, rest)
       | ({namae=_; saitan_kyori=s0; temae_list=_},
          Some {namae=_; saitan_kyori=s1; temae_list=_}) ->
            if s0 < s1 then (Some item, (Option.get saitan_op) :: rest)
@@ -197,7 +197,7 @@ let test9 = saitan_wo_bunri [
 (* dijkstra_main : eki_t list -> ekikan_tree -> eki_t list *)
 let rec dijkstra_main eki_list ekikan_tree = match eki_list with
     [] -> []
-  | {namae=n; saitan_kyori=s; temae_list=t} :: _ ->
+  | {namae=_; saitan_kyori=_; temae_list=_} :: _ ->
       let (saitan_op, rest) = saitan_wo_bunri eki_list in
       let saitan = Option.get saitan_op in
       let undetermined_eki_list = koushin saitan rest ekikan_tree in
@@ -211,7 +211,7 @@ let dijkstra shiten_romaji shuten_romaji =
   let shiten_kanji = romaji_to_kanji shiten_romaji global_ekimei_list in
   let shuten_kanji = romaji_to_kanji shuten_romaji global_ekimei_list in
   let init_list = make_initial_eki_list (seiretsu global_ekimei_list) shiten_kanji in
-  let ekikan_tree = bulk_insert_ekikan RedBlackTree.empty global_ekikan_list in
+  let ekikan_tree = bulk_insert_ekikan empty global_ekikan_list in
   let result_list = dijkstra_main init_list ekikan_tree in
   let rec find_shuten lst shuten = match lst with
       [] -> failwith "shuten not found"
@@ -241,13 +241,9 @@ let print_eki eki = match eki with
      print_newline ())
 
 
-(* 始点の駅名 (ローマ字) と, 終点の駅名 (ローマ字) を受け取り,
-   始点から終点までの最短経路の行き方をprintする. *)
-(* main : string -> string -> unit *)
-let main shiten_romaji shuten_romaji =
-  let eki = dijkstra shiten_romaji shuten_romaji in
+(* main : unit -> unit *)
+let main () =
+  let eki = dijkstra "myogadani" "shinjuku-gyoemmae" in
   print_eki eki
 
-
-let test13 = main "myogadani" "hongosanchome"
-let test14 = main "myogadani" "shinjuku-gyoemmae"
+let _ = main ()

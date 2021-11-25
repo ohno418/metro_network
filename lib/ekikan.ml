@@ -24,7 +24,6 @@ let rec assoc ekimei lst = match lst with
                                               else assoc ekimei rest
 
 
-
 (* Bulk insert. *)
 (* bulk_insert_ekikan : ekikan_tree_t -> ekikan_t list -> ekikan_tree_t *)
 let bulk_insert_ekikan tree lst =

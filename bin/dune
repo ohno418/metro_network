@@ -1,0 +1,4 @@
+(executable
+ (public_name metro_network)
+ (name main)
+ (libraries metro_network))

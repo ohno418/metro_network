@@ -1,7 +1,11 @@
+open Ekimei
+open Ekikan
+open GlobalDataList
+
 (* ekimei_tを受け取り、「路線名, 駅名 (かな)」の文字列返す *)
 (* hyouji : ekimei_t -> string *)
 let hyouji ekimei = match ekimei with
-  {kanji = a; kana = b; romaji = c; shozoku = d} -> d ^ ", " ^ a ^ " (" ^ b ^ ")"
+  {kanji = a; kana = b; romaji = _; shozoku = d} -> d ^ ", " ^ a ^ " (" ^ b ^ ")"
 
 let test1 = hyouji {kanji = "茗荷谷";
                     kana = "みょうがだに";

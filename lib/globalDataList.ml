@@ -1,3 +1,6 @@
+open Ekimei
+open Ekikan
+
 let global_ekimei_list = [ 
   {kanji="代々木上原"; kana="よよぎうえはら"; romaji="yoyogiuehara"; shozoku="千代田線"}; 
   {kanji="代々木公園"; kana="よよぎこうえん"; romaji="yoyogikouen"; shozoku="千代田線"}; 
