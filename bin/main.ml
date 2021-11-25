@@ -1,7 +1,9 @@
 open Metro_network.Dijkstra
 
-let main () =
-  let eki = dijkstra "myogadani" "shinjuku-gyoemmae" in
+(* 始点の駅名 (ローマ字) と終点の駅名 (ローマ字) を受け取り,
+   最短経路での行き方をprintする. *)
+let main shiten shuten =
+  let eki = dijkstra shiten shuten in
   print_eki eki
 
-let _ = main ()
+let _ = main (Sys.argv.(1)) (Sys.argv.(2))
