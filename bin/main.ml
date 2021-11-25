@@ -1,6 +1,6 @@
 open Metro_network.Dijkstra
 
-(* 始点の駅名 (ローマ字) と終点の駅名 (ローマ字) を受け取り,
+(* 始点の駅名 (漢字) と終点の駅名 (漢字) を受け取り,
    最短経路での行き方をprintする. *)
 let main shiten shuten =
   let eki = dijkstra shiten shuten in

@@ -42,6 +42,12 @@ let test5 = romaji_to_kanji "yoyogiuehara" global_ekimei_list = "代々木上原
 let test6 = romaji_to_kanji "shin-ochanomizu" global_ekimei_list = "新御茶ノ水"
 *)
 
+let rec kanji_to_romaji kanji lst = match lst with
+    [] -> raise (No_such_station (kanji))
+  | {kanji=k; kana=_; romaji=r; shozoku=_} :: rest ->
+        if k = kanji then r
+                     else kanji_to_romaji kanji rest
+
 
 (* 駅名 (漢字) 2つと駅間treeを受け取り駅間距離を返す.
    直接つながっていない駅同士の場合は Not_found を raise する. *)
