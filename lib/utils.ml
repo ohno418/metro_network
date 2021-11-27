@@ -14,9 +14,9 @@ let validate_eki_kanji eki =
 
 let get_ekikan_kyori eki1 eki2 tree = assoc eki2 (RedBlackTree.search tree eki1)
 
-(*
-let ekikan_tree = bulk_insert_ekikan RedBlackTree.empty global_ekikan_list
-let test1 = get_ekikan_kyori "新大塚" "茗荷谷" ekikan_tree = 1.2
-let test2 = get_ekikan_kyori "茗荷谷" "新大塚" ekikan_tree = 1.2
-let test3 = get_ekikan_kyori "本郷三丁目" "御茶ノ水" ekikan_tree = 0.8
-*)
+let%test_module "get_ekikan_kyori" = (module struct
+  let ekikan_tree = bulk_insert_ekikan RedBlackTree.empty global_ekikan_list
+  let%test _ = get_ekikan_kyori "新大塚" "茗荷谷" ekikan_tree = 1.2
+  let%test _ = get_ekikan_kyori "茗荷谷" "新大塚" ekikan_tree = 1.2
+  let%test _ = get_ekikan_kyori "本郷三丁目" "御茶ノ水" ekikan_tree = 0.8
+end)
