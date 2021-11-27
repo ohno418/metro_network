@@ -56,61 +56,61 @@ let%test_module "adjust_parent" = (module struct
     (ref 3, 4.4, "45");|]
 end)
 
-let insert (size_ref, data) key value =
+let insert (size_ref, arr) key value =
   let index_ref = ref !size_ref in
-  data.(!size_ref) <- (index_ref, key, value);
+  arr.(!size_ref) <- (index_ref, key, value);
   size_ref := !size_ref + 1;
-  adjust_parent data !index_ref;
-  (index_ref, (size_ref, data)) (* TODO *)
+  adjust_parent arr !index_ref;
+  (index_ref, (size_ref, arr)) (* TODO *)
 
 let%test_module "insert" = (module struct
   let heap = create 7 infinity ""
-  let (size, data) = heap
+  let (size_ref, arr) = heap
 
-  let%test "can create initialized heap" = data = [|
+  let%test "can create initialized heap" = arr = [|
                                           (ref (-1), infinity, "");
                 (ref (-1), infinity, "");                          (ref (-1), infinity, "");
     (ref (-1), infinity, ""); (ref (-1), infinity, ""); (ref (-1), infinity, ""); (ref (-1), infinity, "");
   |]
-  let%test _ = !size = 0
+  let%test _ = !size_ref = 0
 
   let (index, heap) = insert heap 4.2 "hi"
-  let (size, data) = heap
-  let%test "can insert an element into empty heap" = data = [|
+  let (size_ref, arr) = heap
+  let%test "can insert an element into empty heap" = arr = [|
                                             (ref 0, 4.2, "hi");
                 (ref (-1), infinity, "");                          (ref (-1), infinity, "");
     (ref (-1), infinity, ""); (ref (-1), infinity, ""); (ref (-1), infinity, ""); (ref (-1), infinity, "");
   |]
-  let%test _ = !size = 1
+  let%test _ = !size_ref = 1
   let%test _ = !index = 0
 
   let (index, heap) = insert heap 4.7 "greater"
-  let (size, data) = heap
-  let%test "can insert an element into not empty heap" = data = [|
+  let (size_ref, arr) = heap
+  let%test "can insert an element into not empty heap" = arr = [|
                                              (ref 0, 4.2, "hi");
                  (ref 1, 4.7, "greater");                          (ref (-1), infinity, "");
     (ref (-1), infinity, ""); (ref (-1), infinity, ""); (ref (-1), infinity, ""); (ref (-1), infinity, "");
   |]
-  let%test _ = !size = 2
+  let%test _ = !size_ref = 2
   let%test _ = !index = 1
 
   let (index, heap) = insert heap 2.0 "small"
-  let (size, data) = heap
-  let%test "can insert an element into not empty heap" = data = [|
+  let (size_ref, arr) = heap
+  let%test "can insert an element into not empty heap" = arr = [|
                                              (ref 0, 2.0, "small");
                   (ref 1, 4.7, "greater");                              (ref 2, 4.2, "hi");
     (ref (-1), infinity, ""); (ref (-1), infinity, ""); (ref (-1), infinity, ""); (ref (-1), infinity, "");
   |]
-  let%test _ = !size = 3
+  let%test _ = !size_ref = 3
   let%test _ = !index = 0
 
   let (index, heap) = insert heap 3.0 "medium"
-  let (size, data) = heap
-  let%test "can insert an element into not empty heap" = data = [|
+  let (size_ref, arr) = heap
+  let%test "can insert an element into not empty heap" = arr = [|
                                              (ref 0, 2.0, "small");
                   (ref 1, 3.0, "medium");                             (ref 2, 4.2, "hi");
     (ref 3, 4.7, "greater"); (ref (-1), infinity, ""); (ref (-1), infinity, ""); (ref (-1), infinity, "");
   |]
-  let%test _ = !size = 4
+  let%test _ = !size_ref = 4
   let%test _ = !index = 1
 end)
