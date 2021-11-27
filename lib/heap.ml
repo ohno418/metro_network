@@ -23,9 +23,9 @@ let%test_module "swap" = (module struct
   let arr = [|(ref 0, 1.1, "12"); (ref 1, 2.2, "23"); (ref 2, 3.3, "34"); (ref 3, 4.4, "45");|]
 
   let _ = swap arr 0 1
-  let%test "can swap" = arr = [|(ref 0, 2.2, "23"); (ref 1, 1.1, "12"); (ref 2, 3.3, "34"); (ref 3, 4.4, "45");|]
+  let%test _ = arr = [|(ref 0, 2.2, "23"); (ref 1, 1.1, "12"); (ref 2, 3.3, "34"); (ref 3, 4.4, "45");|]
   let _ = swap arr 1 3
-  let%test "can swap" = arr = [|(ref 0, 2.2, "23"); (ref 1, 4.4, "45"); (ref 2, 3.3, "34"); (ref 3, 1.1, "12");|]
+  let%test _ = arr = [|(ref 0, 2.2, "23"); (ref 1, 4.4, "45"); (ref 2, 3.3, "34"); (ref 3, 1.1, "12");|]
 end)
 
 (* Destructively adjust array. *)
@@ -50,7 +50,7 @@ let%test_module "adjust_parent" = (module struct
     (ref 3, 1.1, "12");|]
 
   let _ = adjust_parent arr 3
-  let%test "can adjust" = arr
+  let%test _ = arr
     = [|        (ref 0, 1.1, "12");
       (ref 1, 2.2, "23"); (ref 2, 3.3, "34");
     (ref 3, 4.4, "45");|]
@@ -63,7 +63,7 @@ let insert (size_ref, arr) key value =
   adjust_parent arr !index_ref;
   (index_ref, (size_ref, arr)) (* TODO *)
 
-let%test_module "insert" = (module struct
+let%test_module "create & insert" = (module struct
   let heap = create 7 infinity ""
   let (size_ref, arr) = heap
 
