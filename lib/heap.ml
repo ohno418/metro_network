@@ -6,7 +6,7 @@ type index_t = int ref
    'b:      value *)
 type ('a, 'b) t = int ref * (index_t * 'a * 'b) array
 
-let create size key value = (ref 0, Array.make size (ref (-1), key, value))
+let create max key value = (ref 0, Array.make max (ref (-1), key, value))
 (* initial index is `-1` *)
 
 (* swap : (index_t * 'a * 'b) array -> int -> int -> unit *)
