@@ -29,6 +29,76 @@ let%test_module "swap" = (module struct
 end)
 
 (* Destructively adjust array. *)
+(* adjust_children : int -> (index_t * 'a * 'b) array -> int -> unit *)
+let rec adjust_children size arr current_index =
+  if current_index >= size
+  then ()
+  else let current = arr.(current_index) in
+       let (_, key_c, _) = current in
+       (* left child *)
+       let c_left_index = current_index * 2 + 1 in
+       if c_left_index >= size
+       then ()
+       else let (_, key_left, _) = arr.(c_left_index) in
+       if key_c > key_left
+       then (swap arr c_left_index current_index;
+             adjust_children size arr c_left_index;
+             ())
+       else
+       (* right child *)
+       let c_right_index = current_index * 2 + 2 in
+       if c_right_index >= size
+       then ()
+       else
+       let (_, key_right, _) = arr.(c_right_index) in
+       if key_c > key_right
+       then (swap arr c_right_index current_index;
+             adjust_children size arr c_right_index;
+             ())
+       else ()
+
+let%test_module "adjust_children" = (module struct
+  let arr = [|
+                                        (ref 0, 2.2, "23");
+               (ref 1, 4.4, "45");                              (ref 2, 3.3, "34");
+    (ref 3, 1.1, "12");(ref (-1), infinity, "");(ref (-1), infinity, "");(ref (-1), infinity, "");
+  |]
+  let _ = adjust_children 4 arr 1
+  let%test "left one" = arr
+    = [|
+                                        (ref 0, 2.2, "23");
+               (ref 1, 1.1, "12");                              (ref 2, 3.3, "34");
+    (ref 3, 4.4, "45");(ref (-1), infinity, "");(ref (-1), infinity, "");(ref (-1), infinity, "");
+  |]
+
+  let arr = [|
+                                        (ref 0, 9.9, "23");
+               (ref 1, 2.2, "45");                              (ref 2, 3.3, "34");
+    (ref 3, 4.4, "12");(ref (-1), infinity, "");(ref (-1), infinity, "");(ref (-1), infinity, "");
+  |]
+  let _ = adjust_children 4 arr 0
+  let%test "left multi" = arr
+    = [|
+                                        (ref 0, 2.2, "45");
+               (ref 1, 4.4, "12");                              (ref 2, 3.3, "34");
+    (ref 3, 9.9, "23");(ref (-1), infinity, "");(ref (-1), infinity, "");(ref (-1), infinity, "");
+  |]
+
+  let arr = [|
+                                        (ref 0, 4.0, "23");
+               (ref 1, 4.4, "45");                              (ref 2, 3.3, "34");
+    (ref 3, 1.1, "12");(ref (-1), infinity, "");(ref (-1), infinity, "");(ref (-1), infinity, "");
+  |]
+  let _ = adjust_children 4 arr 0
+  let%test "right" = arr
+    = [|
+                                        (ref 0, 3.3, "34");
+               (ref 1, 4.4, "45");                              (ref 2, 4.0, "23");
+    (ref 3, 1.1, "12");(ref (-1), infinity, "");(ref (-1), infinity, "");(ref (-1), infinity, "");
+  |]
+end)
+
+(* Destructively adjust array. *)
 (* adjust_parent : (index_t * 'a * 'b) array -> int -> unit *)
 let rec adjust_parent arr current_index =
   if current_index = 0
@@ -120,18 +190,51 @@ let get (_, arr) index_ref =
   (k, v)
 
 let set (size_ref, arr) index_ref key value =
+  let (_, k_pre, _) = arr.(!index_ref) in
   (arr.(!index_ref) <- (index_ref, key, value);
+   if key < k_pre
+   then adjust_parent arr !index_ref
+   else adjust_children !size_ref arr !index_ref;
    (size_ref, arr))
 
 let%test_module "get & set" = (module struct
   let heap =
-    (ref 4, [|(ref 0, 1.1, "12"); (ref 1, 2.2, "23"); (ref 2, 3.3, "34"); (ref 3, 4.4, "45");|])
+    (ref 4, [|
+                         (ref 0, 1.1, "12");
+                (ref 1, 2.2, "23"); (ref 2, 3.3, "34");
+      (ref 3, 4.4, "45");|])
 
   let%test _ = get heap (ref 0) = (1.1, "12")
   let%test _ = get heap (ref 2) = (3.3, "34")
 
   let%test _ = set heap (ref 2) 7.7 "77"
-    = (ref 4, [|(ref 0, 1.1, "12"); (ref 1, 2.2, "23"); (ref 2, 7.7, "77"); (ref 3, 4.4, "45");|])
-  let%test "write destructively" = heap =
-    (ref 4, [|(ref 0, 1.1, "12"); (ref 1, 2.2, "23"); (ref 2, 7.7, "77"); (ref 3, 4.4, "45");|])
+    = (ref 4, [|
+                       (ref 0, 1.1, "12");
+             (ref 1, 2.2, "23"); (ref 2, 7.7, "77");
+    (ref 3, 4.4, "45");|])
+  let%test "write destructively" = heap
+    = (ref 4, [|
+                       (ref 0, 1.1, "12");
+             (ref 1, 2.2, "23"); (ref 2, 7.7, "77");
+    (ref 3, 4.4, "45");|])
+  let%test _ = set heap (ref 1) 0.1 "00"
+    = (ref 4, [|
+                         (ref 0, 0.1, "00");
+               (ref 1, 1.1, "12"); (ref 2, 7.7, "77");
+      (ref 3, 4.4, "45");|])
+  let%test "write destructively" = heap
+    = (ref 4, [|
+                         (ref 0, 0.1, "00");
+               (ref 1, 1.1, "12"); (ref 2, 7.7, "77");
+      (ref 3, 4.4, "45");|])
+  let%test _ = set heap (ref 0) 9.9 "99"
+    = (ref 4, [|
+                         (ref 0, 1.1, "12");
+               (ref 1, 4.4, "45"); (ref 2, 7.7, "77");
+      (ref 3, 9.9, "99");|])
+  let%test "write destructively" = heap
+    = (ref 4, [|
+                         (ref 0, 1.1, "12");
+               (ref 1, 4.4, "45"); (ref 2, 7.7, "77");
+      (ref 3, 9.9, "99");|])
 end)
