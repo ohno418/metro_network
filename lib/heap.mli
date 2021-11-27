@@ -25,9 +25,7 @@ val set : ('a, 'b) t -> index_t -> 'a -> 'b -> ('a, 'b) t
   (* Set key and value to the index of the heap.
      (Write the heap destructively.) *)
 
-(*
 val split_top : ('a, 'b) t -> ('a * 'b) * ('a, 'b) t
   (* usage: split_top heap *)
   (* Returns an element of the minimum key and heap.
      (Write the heap destructively.) *)
-*)

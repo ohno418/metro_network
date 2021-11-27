@@ -238,3 +238,25 @@ let%test_module "get & set" = (module struct
                (ref 1, 4.4, "45"); (ref 2, 7.7, "77");
       (ref 3, 9.9, "99");|])
 end)
+
+let split_top (size_ref, arr) =
+  let (_, k, v) = arr.(0) in
+  (size_ref := !size_ref - 1;
+   arr.(0) <- arr.(!size_ref);
+   adjust_children !size_ref arr 0;
+   ((k, v), (size_ref, arr)))
+
+let%test_module "split_top" = (module struct
+  let heap =
+    (ref 4, [|
+                         (ref 0, 1.1, "12");
+                (ref 1, 2.2, "23"); (ref 2, 3.3, "34");
+      (ref 3, 4.4, "45");|])
+  let (_, arr) = heap
+
+  let (top, (size_ref, rest_arr)) = split_top heap
+  let%test _ = top = (1.1, "12")
+  let%test _ = size_ref = ref 3
+  let%test _ = rest_arr = [|(ref 0, 2.2, "23"); (ref 1, 4.4, "45"); (ref 2, 3.3, "34"); (ref 1, 4.4, "45")|]
+  let%test "write destructively" = arr = rest_arr
+end)
