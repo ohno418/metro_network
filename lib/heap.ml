@@ -114,3 +114,24 @@ let%test_module "create & insert" = (module struct
   let%test _ = !size_ref = 4
   let%test _ = !index = 1
 end)
+
+let get (_, arr) index_ref =
+  let (_, k, v) = arr.(!index_ref) in
+  (k, v)
+
+let set (size_ref, arr) index_ref key value =
+  (arr.(!index_ref) <- (index_ref, key, value);
+   (size_ref, arr))
+
+let%test_module "get & set" = (module struct
+  let heap =
+    (ref 4, [|(ref 0, 1.1, "12"); (ref 1, 2.2, "23"); (ref 2, 3.3, "34"); (ref 3, 4.4, "45");|])
+
+  let%test _ = get heap (ref 0) = (1.1, "12")
+  let%test _ = get heap (ref 2) = (3.3, "34")
+
+  let%test _ = set heap (ref 2) 7.7 "77"
+    = (ref 4, [|(ref 0, 1.1, "12"); (ref 1, 2.2, "23"); (ref 2, 7.7, "77"); (ref 3, 4.4, "45");|])
+  let%test "write destructively" = heap =
+    (ref 4, [|(ref 0, 1.1, "12"); (ref 1, 2.2, "23"); (ref 2, 7.7, "77"); (ref 3, 4.4, "45");|])
+end)
