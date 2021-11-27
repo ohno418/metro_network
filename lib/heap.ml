@@ -56,12 +56,12 @@ let%test_module "adjust_parent" = (module struct
     (ref 3, 4.4, "45");|]
 end)
 
-let insert (size, data) key value =
-  let index = ref !size in
-  data.(!size) <- (index, key, value);
-  size := !size + 1;
-  adjust_parent data !index;
-  (index, (size, data)) (* TODO *)
+let insert (size_ref, data) key value =
+  let index_ref = ref !size_ref in
+  data.(!size_ref) <- (index_ref, key, value);
+  size_ref := !size_ref + 1;
+  adjust_parent data !index_ref;
+  (index_ref, (size_ref, data)) (* TODO *)
 
 let%test_module "insert" = (module struct
   let heap = create 7 infinity ""
