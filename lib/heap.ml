@@ -131,7 +131,7 @@ let insert (size_ref, arr) key value =
   arr.(!size_ref) <- (index_ref, key, value);
   size_ref := !size_ref + 1;
   adjust_parent arr !index_ref;
-  (index_ref, (size_ref, arr)) (* TODO *)
+  (index_ref, (size_ref, arr))
 
 let%test_module "create & insert" = (module struct
   let heap = create 7 infinity ""
