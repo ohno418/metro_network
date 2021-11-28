@@ -268,3 +268,34 @@ let%test_module "split_top" = (module struct
   let%test _ = rest_arr = [|(ref 0, 2.2, "23"); (ref 1, 4.4, "45"); (ref 2, 3.3, "34"); (ref 1, 4.4, "45")|]
   let%test "write destructively" = arr = rest_arr
 end)
+
+let heap_sort lst =
+  let len = List.length lst in
+  (* Takes a list and an empty heap,
+     and returns a full heap. *)
+  (* list_to_heap : 'a list -> ('a, int) t *)
+  let list_to_heap lst =
+    match lst with
+        [] -> assert false
+      | a :: _ ->
+          List.fold_left
+            (fun heap ele ->
+              let (_, heap) = insert heap ele () in
+              heap)
+            (create len a ())
+            lst in
+  (* Extract all elements of the heap into a list.
+     `lst` is accumlator. *)
+  (* extract_all_elements : ('a, unit) t -> 'a list -> 'a list *)
+  let rec extract_all_elements heap lst =
+    let (size_ref, _) = heap in
+    if !size_ref = 0
+    then lst
+    else let ((key, _), rest_heap) = split_top heap in
+         extract_all_elements rest_heap (key :: lst) in
+  extract_all_elements (list_to_heap lst) []
+
+let%test_module "heap_sort" = (module struct
+  let lst = [4;6;2;7;1;1;9]
+  let%test "sorts in descending order" = heap_sort lst = [9;7;6;4;2;1;1]
+end)

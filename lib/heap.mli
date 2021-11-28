@@ -29,3 +29,7 @@ val split_top : ('a, 'b) t -> ('a * 'b) * ('a, 'b) t
   (* usage: split_top heap *)
   (* Returns an element of the minimum key and heap.
      (Write the heap destructively.) *)
+
+val heap_sort : 'a list -> 'a list
+  (* usage: heap_sort lst *)
+  (* Returns descending sorted list. *)
