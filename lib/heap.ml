@@ -99,7 +99,7 @@ let%test_module "adjust_children" = (module struct
       (ref 3, 9, ());
     |]
   let _ = adjust_children 4 arr 0
-  let%test "TODO" = arr = [|
+  let%test _ = arr = [|
                    (ref 0, 6, ());
             (ref 1, 7, ()); (ref 2, 9, ());
       (ref 3, 9, ());
