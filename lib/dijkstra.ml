@@ -196,7 +196,7 @@ let%test_module "saitan_wo_bunri" = (module struct
   )
 end)
 
-(* 未確定の駅のリスト eki_list と, 駅間データ ekikan_list を受け取り,
+(* 未確定の駅のリスト eki_list と, 駅間データ ekikan_tree を受け取り,
    ダイクストラのアルゴリズムにより,
    各駅について最短距離と最短経路が正しく入ったリストを返す. *)
 (* dijkstra_main : eki_t list -> ekikan_tree -> eki_t list *)
