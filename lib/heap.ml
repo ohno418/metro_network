@@ -35,27 +35,23 @@ let rec adjust_children size arr current_index =
   then ()
   else let current = arr.(current_index) in
        let (_, key_c, _) = current in
-       (* left child *)
        let c_left_index = current_index * 2 + 1 in
        if c_left_index >= size
        then ()
        else let (_, key_left, _) = arr.(c_left_index) in
-       if key_c > key_left
-       then (swap arr c_left_index current_index;
-             adjust_children size arr c_left_index;
-             ())
-       else
-       (* right child *)
-       let c_right_index = current_index * 2 + 2 in
-       if c_right_index >= size
-       then ()
-       else
-       let (_, key_right, _) = arr.(c_right_index) in
-       if key_c > key_right
-       then (swap arr c_right_index current_index;
-             adjust_children size arr c_right_index;
-             ())
-       else ()
+            let c_right_index = current_index * 2 + 2 in
+            if c_right_index >= size
+            then if key_c <= key_left
+                 then ()
+                 else (swap arr c_left_index current_index;
+                       adjust_children size arr c_left_index)
+            else let (_, key_right, _) = arr.(c_right_index) in
+                 if key_c <= key_left && key_c <= key_right then () else
+                 if key_left < key_right
+                 then (swap arr c_left_index current_index;
+                       adjust_children size arr c_left_index)
+                 else (swap arr c_right_index current_index;
+                       adjust_children size arr c_right_index)
 
 let%test_module "adjust_children" = (module struct
   let arr = [|
@@ -96,6 +92,18 @@ let%test_module "adjust_children" = (module struct
                (ref 1, 4.4, "45");                              (ref 2, 4.0, "23");
     (ref 3, 1.1, "12");(ref (-1), infinity, "");(ref (-1), infinity, "");(ref (-1), infinity, "");
   |]
+
+  let arr = [|
+                   (ref 3, 9, ());
+            (ref 1, 7, ()); (ref 2, 6, ());
+      (ref 3, 9, ());
+    |]
+  let _ = adjust_children 4 arr 0
+  let%test "TODO" = arr = [|
+                   (ref 0, 6, ());
+            (ref 1, 7, ()); (ref 2, 9, ());
+      (ref 3, 9, ());
+    |]
 end)
 
 (* Destructively adjust array. *)
